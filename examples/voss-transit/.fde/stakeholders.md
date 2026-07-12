@@ -14,5 +14,6 @@
 - [2026-07-03] [signal:green] Supervisor ran afternoon peak on the canary board; radio log used only as backup
 - [2026-07-06] [signal:green] Leon signed the rollback drill - 6 min 40s back to the paper log
 - [2026-07-07] [signal:green] Marisol asked to expand to Depot A Thursday - her ask, not ours
+- [2026-09-06] [signal:green] Marisol pinged after the Depot B week - wants the Thursday expand pack
 
 **Trust:** green (since 2026-06-04). Government engagement; council demo is still a rumor - do not treat August as a date.

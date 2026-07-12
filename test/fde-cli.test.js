@@ -121,6 +121,7 @@ test('resume --init creates templates, binds the workspace, and resume resolves 
 
   const eng = engagementPath(sandbox, 'garvey-payments')
   assert.equal(fs.existsSync(path.join(eng, 'context.md')), true)
+  assert.equal(fs.existsSync(path.join(eng, 'time.md')), true)
   assert.equal(fs.existsSync(path.join(eng, 'retrospectives')), true)
 
   const registry = fs.readFileSync(path.join(sandbox.home, 'fde-engagements', '.registry'), 'utf8')
@@ -2482,4 +2483,165 @@ test('doctor flags unbalanced <private> markers, which change what is public', (
   assert.match(doc.stdout, /risks\.md has 1 unclosed <private>/)
   // Doctor reports the imbalance, never the sealed text.
   assert.doesNotMatch(doc.stdout, /sponsor is being replaced/)
+})
+
+function isoDate(offsetDays) {
+  const d = new Date()
+  d.setDate(d.getDate() + offsetDays)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
+function writeSignalHistory(eng, lines) {
+  fs.writeFileSync(
+    path.join(eng, 'stakeholders.md'),
+    ['# Stakeholders', '', '| Name | Role | Stance | Notes |', '|------|------|--------|-------|', '| Denise | sponsor | champion | |', '', '## Signal history', '', ...lines, ''].join('\n')
+  )
+}
+
+test('log time and budget write time.md; time without hours is refused', () => {
+  const sandbox = makeSandbox('time-log')
+  assert.equal(runFde(sandbox, ['resume', '--init', 'Acme']).status, 0)
+
+  const budget = runFde(sandbox, ['log', 'budget', '4h'])
+  assert.equal(budget.status, 0, budget.stderr)
+  assert.match(budget.stdout, /budget → 4h/)
+
+  const logged = runFde(sandbox, ['log', 'time', '2.5h write-back slice'])
+  assert.equal(logged.status, 0, logged.stderr)
+  assert.match(logged.stdout, /logged → time\.md/)
+
+  const eng = engagementPath(sandbox, 'acme')
+  const md = fs.readFileSync(path.join(eng, 'time.md'), 'utf8')
+  assert.match(md, /\*\*Week budget:\*\* 4h/)
+  assert.match(md, /2\.5h write-back slice/)
+  assert.match(md, new RegExp(`\\[${isoDate(0)}\\]`))
+
+  const bad = runFde(sandbox, ['log', 'time', 'no hours here'])
+  assert.notEqual(bad.status, 0)
+  assert.match(bad.stderr, /fde log time/)
+})
+
+test('debrief routes time: and budget: prefixes', () => {
+  const sandbox = makeSandbox('time-debrief')
+  assert.equal(runFde(sandbox, ['resume', '--init', 'Acme']).status, 0)
+
+  const dry = runFde(sandbox, ['debrief', '--dry-run'], {
+    input: 'budget: 6h\ntime: 2h write-back\ndecision: park the Nashville view\n',
+  })
+  assert.equal(dry.status, 0, dry.stderr)
+  assert.match(dry.stdout, /time\.md/)
+  assert.match(dry.stdout, /Week budget 6h/)
+  assert.match(dry.stdout, /2h write-back/)
+
+  const apply = runFde(sandbox, ['debrief'], {
+    input: 'budget: 6h\ntime: 2h write-back\n',
+  })
+  assert.equal(apply.status, 0, apply.stderr)
+  assert.match(apply.stdout, /1 time/)
+  assert.match(apply.stdout, /1 budget/)
+
+  const md = fs.readFileSync(path.join(engagementPath(sandbox, 'acme'), 'time.md'), 'utf8')
+  assert.match(md, /\*\*Week budget:\*\* 6h/)
+  assert.match(md, /2h write-back/)
+})
+
+test('debrief does not route <private> into time.md', () => {
+  const sandbox = makeSandbox('time-private')
+  assert.equal(runFde(sandbox, ['resume', '--init', 'Acme']).status, 0)
+  const secret = '4111-1111-1111-1111'
+  const r = runFde(sandbox, ['debrief'], {
+    input: `time: 1h desk shadow\n<private>\ncard ${secret}\n</private>\n`,
+  })
+  assert.equal(r.status, 0, r.stderr)
+  const eng = engagementPath(sandbox, 'acme')
+  assert.doesNotMatch(fs.readFileSync(path.join(eng, 'time.md'), 'utf8'), new RegExp(secret))
+  assert.match(fs.readFileSync(path.join(eng, 'context.md'), 'utf8'), /private/)
+})
+
+test('pulse is green on a fresh customer touch and hours this week', () => {
+  const sandbox = makeSandbox('pulse-green')
+  assert.equal(runFde(sandbox, ['resume', '--init', 'Acme']).status, 0)
+  const eng = engagementPath(sandbox, 'acme')
+  writeSignalHistory(eng, [`- [${isoDate(0)}] [signal:green] Denise saw the demo`])
+  assert.equal(runFde(sandbox, ['log', 'budget', '4h']).status, 0)
+  assert.equal(runFde(sandbox, ['log', 'time', '2h demo prep']).status, 0)
+
+  const status = runFde(sandbox, ['status'])
+  assert.equal(status.status, 0, status.stderr)
+  assert.match(status.stdout, /pulse:green/)
+  assert.match(status.stdout, /2h\/4h/)
+  assert.match(status.stdout, /touch today/)
+})
+
+test('pulse is amber when last customer touch is 5 days old', () => {
+  const sandbox = makeSandbox('pulse-amber')
+  assert.equal(runFde(sandbox, ['resume', '--init', 'Acme']).status, 0)
+  const eng = engagementPath(sandbox, 'acme')
+  writeSignalHistory(eng, [`- [${isoDate(-5)}] [signal:green] Denise joined standup`])
+  assert.equal(runFde(sandbox, ['log', 'budget', '4h']).status, 0)
+  assert.equal(runFde(sandbox, ['log', 'time', '1h notes']).status, 0)
+
+  const status = runFde(sandbox, ['status'])
+  assert.equal(status.status, 0, status.stderr)
+  assert.match(status.stdout, /pulse:amber/)
+  assert.match(status.stdout, /touch 5d/)
+})
+
+test('pulse is red when last customer touch is over 7 days', () => {
+  const sandbox = makeSandbox('pulse-red-touch')
+  assert.equal(runFde(sandbox, ['resume', '--init', 'Acme']).status, 0)
+  const eng = engagementPath(sandbox, 'acme')
+  writeSignalHistory(eng, [`- [${isoDate(-10)}] [signal:green] Denise emailed`])
+  assert.equal(runFde(sandbox, ['log', 'budget', '4h']).status, 0)
+  assert.equal(runFde(sandbox, ['log', 'time', '1h notes']).status, 0)
+
+  const status = runFde(sandbox, ['status'])
+  assert.equal(status.status, 0, status.stderr)
+  assert.match(status.stdout, /pulse:red/)
+  assert.match(status.stdout, /touch 10d/)
+})
+
+test('pulse is red when the FDE has not shown up in 3 days and logged 0h', () => {
+  const sandbox = makeSandbox('pulse-red-noshow')
+  assert.equal(runFde(sandbox, ['resume', '--init', 'Acme']).status, 0)
+  const eng = engagementPath(sandbox, 'acme')
+  writeSignalHistory(eng, [`- [${isoDate(-1)}] [signal:green] Denise replied`])
+  assert.equal(runFde(sandbox, ['log', 'budget', '4h']).status, 0)
+  const past = new Date(Date.now() - 4 * 86400000)
+  fs.utimesSync(path.join(eng, 'context.md'), past, past)
+
+  const status = runFde(sandbox, ['status'])
+  assert.equal(status.status, 0, status.stderr)
+  assert.match(status.stdout, /pulse:red/)
+  assert.match(status.stdout, /0h\/4h/)
+
+  const doctor = runFde(sandbox, ['doctor'])
+  assert.notEqual(doctor.status, 0)
+  assert.match(doctor.stdout, /pulse is red|starved/)
+})
+
+test('status --all lists pulse and hours; dashboard vitals include them', () => {
+  const sandbox = makeSandbox('pulse-status-dash')
+  assert.equal(runFde(sandbox, ['resume', '--init', 'Acme']).status, 0)
+  const eng = engagementPath(sandbox, 'acme')
+  writeSignalHistory(eng, [`- [${isoDate(0)}] [signal:green] Denise saw demo`])
+  assert.equal(runFde(sandbox, ['log', 'budget', '4h']).status, 0)
+  assert.equal(runFde(sandbox, ['log', 'time', '2h slice']).status, 0)
+
+  const status = runFde(sandbox, ['status', '--all'])
+  assert.equal(status.status, 0, status.stderr)
+  assert.match(status.stdout, /pulse:green/)
+  assert.match(status.stdout, /2h\/4h/)
+
+  const out = path.join(sandbox.dir, 'fieldbook.html')
+  const dash = runFde(sandbox, ['dashboard', '--out', out])
+  assert.equal(dash.status, 0, dash.stderr)
+  const html = fs.readFileSync(out, 'utf8')
+  assert.match(html, /pulse/)
+  assert.match(html, /hours this week/)
+  assert.match(html, /2h \/ 4h/)
+  assert.doesNotMatch(html, /4111-1111/)
 })

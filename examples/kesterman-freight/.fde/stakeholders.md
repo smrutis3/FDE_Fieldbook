@@ -14,5 +14,6 @@
 - [2026-06-26] [signal:amber] Denise skipped Thursday demo, no delegate sent, no reschedule
 - [2026-07-01] [signal:amber] Denise stopped replying to demo invites; third scope add arrived the same day via email
 - [2026-07-02] [signal:amber] Randy + Karen sync: Randy says Denise is "heads-down on the Nashville depot audit" (his read, unverified)
+- [2026-09-03] [signal:amber] Denise still not on the demo thread; Randy confirmed Thursday is the next real window
 
 **Trust:** amber (since 2026-06-26). Working theory: attention drain, not dissatisfaction - verify directly before the 2026-07-09 demo.

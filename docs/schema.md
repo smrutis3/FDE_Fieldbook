@@ -24,6 +24,7 @@ After confirm, `fde ingest apply` writes thin dated facts into `.fde/` (same rou
 | `success.md` | Definition of done + primary value bucket + out of scope | land |
 | `stakeholders.md` | Champions, resistance, `[signal:green\|amber\|red]` trust tokens | land (updated continuously), `fde log contact --signal`, `fde debrief` |
 | `trust-profile.md` | Sacred data, AI policy (`<private>` tags) | land, overlays |
+| `time.md` | Week budget + dated hours (`2.5h …`) | `fde log time` / `fde log budget`, `fde debrief` `time:` / `budget:` |
 
 ## Discovery and delivery
 
@@ -55,14 +56,15 @@ After confirm, `fde ingest apply` writes thin dated facts into `.fde/` (same rou
 
 ## Rules
 
-1. **`<private>...</private>`** - redacted from CLI, dashboard, and hook-injected context. Nothing inside a block is ever routed into `decisions.md`/`risks.md`/`delivery.md`/`stakeholders.md`; `fde debrief`/`fde ingest` seal it verbatim into `context.md` instead, and hold it out of the agent-facing `.debrief-propose` in an owner-only (`0600`) `.debrief-private` sidecar that only `--apply` reads; a `.debrief-seal` receipt records how many blocks were sealed, so `--apply` refuses rather than silently dropping one if the sidecar disappears. Do not load raw blocks into the model via file tools or paste.
+1. **`<private>...</private>`** - redacted from CLI, dashboard, and hook-injected context. Nothing inside a block is ever routed into `decisions.md`/`risks.md`/`delivery.md`/`stakeholders.md`/`time.md`; `fde debrief`/`fde ingest` seal it verbatim into `context.md` instead, and hold it out of the agent-facing `.debrief-propose` in an owner-only (`0600`) `.debrief-private` sidecar that only `--apply` reads; a `.debrief-seal` receipt records how many blocks were sealed, so `--apply` refuses rather than silently dropping one if the sidecar disappears. Do not load raw blocks into the model via file tools or paste.
 2. Phases load files **on demand**, not the whole directory.
 3. **Do not** mix two customers in one `.fde/`.
 4. **Deliverable = memory:** `--init` creates only the core files; phase artifacts (`audit.md`, `chaos-log.md`, `handoff.md`, `evals.md`, …) are created by their phases when they run - formats live in [skills/fde/references/](../skills/fde/references/).
 5. Every claim carries its evidence: `(ops lead, Day 5)` · `(churn: 47/90d)` · `(stated, unverified)`.
-6. **Trust signals are tokens:** the latest dated `[signal:green|amber|red]` in `stakeholders.md` drives `fde status` / `fde dashboard`; tokens older than 21 days show as stale. Keyword matching is only the fallback when no token exists.
-7. **Assumptions are not receipts:** `assumptions.md` and `brief.md` are claims. `fde receipts` labels them separately from dated agreements.
-8. **Plans need a kill list; deliveries need a value ledger.** No finished plan without Now/Next/Later/Kill. No ship without bucket + promised → measured → evidence (measured may be pending). AI-touching ships also need an eval receipt (`evals.md` or Ship receipts); non-AI ships leave eval as `n/a`.
+6. **Trust signals are tokens:** the latest dated `[signal:green|amber|red]` in `stakeholders.md` drives the **trust** column in `fde status` / `fde dashboard`; tokens older than 21 days show as stale. Keyword matching is only the fallback when no token exists. **Pulse** is a separate axis (last dated customer touch + hours this week in `time.md`): green ≤3d touch, amber 4–7d or in-touch with 0h, red >7d or 0h and last FDE session ≥3d. Pulse is not product adoption and does not override trust.
+7. **Time is planned vs spent:** `**Week budget:**` plus dated `- [YYYY-MM-DD] 2.5h …` lines in `time.md`. Starved = budget > 0 and 0h while the ISO week is underway (Tue+) or the last FDE session is ≥3 days.
+8. **Assumptions are not receipts:** `assumptions.md` and `brief.md` are claims. `fde receipts` labels them separately from dated agreements.
+9. **Plans need a kill list; deliveries need a value ledger.** No finished plan without Now/Next/Later/Kill. No ship without bucket + promised → measured → evidence (measured may be pending). AI-touching ships also need an eval receipt (`evals.md` or Ship receipts); non-AI ships leave eval as `n/a`.
 
 Scaffold: `fde resume --init <engagement-name>` (creates the folder AND binds the current workspace to it).
 

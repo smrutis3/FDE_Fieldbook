@@ -25,19 +25,21 @@ The solo FDE running three customers simultaneously is the norm, not the excepti
 
 Cross-contamination is the fastest way to lose two engagements at once.
 
-**2. The daily triage.** Every morning, before opening any editor:
+**2. The daily triage.** Every morning, before opening any editor: run `fde status --all`. Fill the table from that output — never invent hours or a pulse color.
 
 ```markdown
 ## Daily triage - <date>
 
-| Customer | Trust signal | Top risk | Today's action | Time budget |
-|----------|-------------|----------|---------------|-------------|
-| Garvey | green | Canary blocked on their security ticket | Chase ticket, prep ship checklist | 4h |
-| Kesterman | AMBER | Sponsor went quiet Tue | Proactive conversation TODAY | 2h |
-| Rennick | green | None active | Build slice 3, push PR | 2h |
+| Customer | Trust | Pulse | Hours (spent/budget) | Top risk | Today's action |
+|----------|-------|-------|----------------------|----------|----------------|
+| Garvey | green | green | 2.5/4h | Canary blocked on their security ticket | Chase ticket, prep ship checklist |
+| Kesterman | AMBER | red | 0/2h | Sponsor went quiet Tue | Proactive conversation TODAY |
+| Rennick | green | amber | 0/2h | None active | Build slice 3, push PR |
 
-Priority order: Kesterman (amber trust), Garvey (deadline), Rennick (steady)
+Priority order: trust first, then pulse, then starve (0h with a budget). Kesterman (amber trust + red pulse) before Garvey.
 ```
+
+Pulse is last **customer touch** + **your hours this week**, not product adoption. Log actuals with `fde log time 2h <note>` and the week's plan with `fde log budget 4h`.
 
 **3. The triage rules.** In order of priority:
 

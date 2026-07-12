@@ -13,5 +13,6 @@
 - [2026-06-24] [signal:green] Priya cleared 45 min for the reality readout, no pushback on the mailbox finding
 - [2026-07-04] [signal:amber] Priya skipped the Friday options working session, no delegate, no reschedule
 - [2026-07-08] [signal:amber] Priya still silent on the memo; Walt asked the FDE for a mailbox summarizer without her
+- [2026-08-30] [signal:amber] Priya's EA bounced the Friday slot again - no new date
 
 **Trust:** amber (since 2026-07-04). Working theory: August board demo is colliding with a reorg rumor Walt will not put on email - verify with Priya, do not guess.

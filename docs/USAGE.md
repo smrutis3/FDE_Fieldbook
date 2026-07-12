@@ -79,6 +79,28 @@ Raw stays in `~/fde-engagements/<client>/.inbox/`; dated facts land in `.fde/` w
 
 ---
 
+## Time + pulse
+
+Planned hours vs spent, and whether you are still in touch — computed locally from `.fde/` files. Not a live feed from Slack or their product.
+
+```bash
+fde log budget 4h
+fde log time 2.5h write-back slice
+fde status --all
+```
+
+`time.md` holds `**Week budget:**` and dated `- [YYYY-MM-DD] 2.5h …` lines. Debrief accepts `time:` / `budget:` prefixes the same way as `decision:`.
+
+**Pulse** (separate from trust):
+
+- **green** — last dated customer touch in `stakeholders.md` is ≤ 3 days
+- **amber** — last touch 4–7 days, or in touch but 0h logged this week
+- **red** — last touch > 7 days, or last FDE session ≥ 3 days **and** 0h this week
+
+Trust stays political (sponsor cooling, passed-over architect). Pulse is operational. `fde status` sorts trust first, then pulse, then starve.
+
+---
+
 ## Trust signals
 
 Log stakeholder temperature as structured tokens, not vibes:
@@ -115,6 +137,8 @@ npx fdeops dashboard                # optional local HTML view of the fieldbook
 | When did we agree to drop that? | `fde receipts …` |
 | Draft the sponsor update | `fde status` (+ judgment in chat) |
 | Log that the sponsor went quiet | `fde log contact "…" --signal amber` |
+| Log 2 hours / set this week's budget | `fde log time 2h …` / `fde log budget 4h` |
+| Who is starved / who did I ignore? | `fde status --all` |
 | Wrap the session / share the thinking / before the PR | Session digest into `.fde/` (TL;DR, decisions & why) — not transcript sync |
 
 **Full command list** (power users / scripts):
@@ -131,9 +155,11 @@ fde doctor                        # check the fieldbook for gaps
 fde prep "sponsor sync"           # walk-in brief from existing memory
 fde log decision "…"
 fde log contact "…" --signal amber
+fde log time 2.5h "write-back slice"
+fde log budget 4h
 fde receipts "descope"            # dated agreements (ON RECORD)
-fde dashboard --all               # every client, sorted by trust
-fde status [--all]                # trust-first triage
+fde dashboard --all               # every client, sorted by trust then pulse
+fde status [--all]                # trust-first, then pulse, then starve
 fde demo                          # the whole loop on a fake client (--clean removes it)
 ```
 
@@ -152,6 +178,7 @@ Each `.fde/` is a local git repo (no remote, no telemetry). Writes stage only th
     brief.md        ← what they said (hypothesis)
     reality.md      ← what is actually true
     stakeholders.md ← contacts + [signal:…] tokens
+    time.md         ← week budget + dated hours
     …
   .inbox/           ← raw staged pulls (ingest); not the memory ledger
 ```

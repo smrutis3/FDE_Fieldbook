@@ -13,7 +13,8 @@
  *   fde resume --full       same, but the complete context.md (no bound)
  *   fde resume --init <n>   create + bind an engagement for this workspace
  *   fde triage              deterministic TRIAGE block (hooks / Cursor entry)
- *   fde log <type> <text>   structured append (decision|risk|delivery|contact)
+ *   fde log <type> <text>   structured append (decision|risk|delivery|contact|time)
+ *   fde log budget <Nh>     set this week's planned hours in time.md
  *   fde debrief [file]      meeting notes → structured memory (stdin if no file)
  *   fde debrief --smart     propose routing from messy notes; --apply commits it
  *   fde prep [label]        grounded walk-in brief from existing .fde/ only
@@ -44,7 +45,9 @@ const DEBRIEF_MAX_BYTES = 256 * 1024
 const CODE_EXT = ['.js', '.ts', '.tsx', '.jsx', '.py', '.java', '.go', '.rb', '.cs', '.php']
 const CONF_EXT = CODE_EXT.concat(['.env', '.yaml', '.yml', '.json'])
 // one routing table for structured appends - cmdLog and cmdDebrief share it
-const LOG_FILES = { decision: 'decisions.md', risk: 'risks.md', delivery: 'delivery.md', contact: 'stakeholders.md' }
+const LOG_FILES = { decision: 'decisions.md', risk: 'risks.md', delivery: 'delivery.md', contact: 'stakeholders.md', time: 'time.md' }
+const DEBRIEF_PREFIXES = 'decision|risk|delivery|contact|next|time|budget'
+const TIME_MD_STUB = '# Time\n\n**Week budget:**\n\n## Log\n'
 
 // constant-command runner - never receives user input
 function sh(cmd, cwd) {
@@ -619,6 +622,7 @@ function appendUnderSection(md, heading, entry) {
 // "## Signal history"; everything else is a plain end-of-file append.
 function appendLogEntry(eng, type, entry, opts = {}) {
   ensureMemoryGit(eng)
+  if (type === 'time') ensureTimeMd(eng)
   const p = path.join(eng, LOG_FILES[type])
   if (type === 'contact' && /\[signal:(red|amber|green)\]/i.test(entry)) {
     withFileLock(p, () => {
@@ -626,6 +630,10 @@ function appendLogEntry(eng, type, entry, opts = {}) {
     })
     // Durable CLI ledger - not rewritten by agent artifact passes.
     lockedAppendFile(path.join(eng, SIGNAL_LEDGER), `${entry}\n`)
+  } else if (type === 'time') {
+    withFileLock(p, () => {
+      atomicWriteFile(p, appendUnderSection(readEng(eng, LOG_FILES[type]) || TIME_MD_STUB, 'Log', entry))
+    })
   } else {
     lockedAppendFile(p, `\n${entry}\n`)
   }
@@ -720,9 +728,29 @@ const {
   computeSignals,
   resumeTriage,
   countOpenRisks,
+  parseHours,
+  formatHours,
 } = createTrustApi({
   fs, path, readClean, readEng, parseMdTable, sectionBody, SIGNAL_LEDGER, memoryDirtyManual,
 })
+
+function ensureTimeMd(eng) {
+  const p = path.join(eng, 'time.md')
+  if (fs.existsSync(p)) return
+  withFileLock(p, () => { atomicWriteFile(p, TIME_MD_STUB) })
+}
+
+function setWeekBudget(eng, hours, opts = {}) {
+  ensureMemoryGit(eng)
+  ensureTimeMd(eng)
+  const p = path.join(eng, 'time.md')
+  let md = readEng(eng, 'time.md') || TIME_MD_STUB
+  const line = `**Week budget:** ${formatHours(hours)}`
+  if (/\*\*Week budget:\*\*/i.test(md)) md = md.replace(/\*\*Week budget:\*\*\s*[^\n]*/i, line)
+  else md = `${line}\n\n${md}`
+  withFileLock(p, () => { atomicWriteFile(p, md.endsWith('\n') ? md : md + '\n') })
+  if (!opts.skipCommit) commitMemory(eng, 'log budget', { files: ['time.md'] })
+}
 
 // Stakeholders: columns are matched by header wording, not position - real
 // files use "Name" or "Name / role", "Stance" or "Signal", with or without a
@@ -1215,7 +1243,23 @@ function cmdLog(args) {
     return
   }
 
-  if (!LOG_FILES[type] || !text) { console.error('usage: fde log <decision|risk|delivery|contact> <text> [--signal red|amber|green] [--force]\n       fde log phase <land|discover|plan|build|ship|close>\n       fde log --undo'); process.exit(1) }
+  if (type === 'budget') {
+    const hours = parseHours(text)
+    if (hours == null) {
+      console.error('usage: fde log budget <hours>   e.g. fde log budget 4h')
+      process.exit(1)
+    }
+    setWeekBudget(eng, hours)
+    const hash = memoryHead(eng)
+    console.log(`budget → ${formatHours(hours)} this week${hash ? ` @${hash}` : ''}`)
+    return
+  }
+
+  if (!LOG_FILES[type] || !text) { console.error('usage: fde log <decision|risk|delivery|contact|time> <text> [--signal red|amber|green] [--force]\n       fde log budget <hours>\n       fde log phase <land|discover|plan|build|ship|close>\n       fde log --undo'); process.exit(1) }
+  if (type === 'time' && parseHours(text) == null) {
+    console.error('usage: fde log time <hours> <note>   e.g. fde log time 2.5h write-back slice')
+    process.exit(1)
+  }
   if (signal && type !== 'contact') { console.error('--signal only applies to: fde log contact'); process.exit(1) }
   const hit = findSecretHit(text)
   if (hit && !force) { refuseSecret('log text', hit); process.exit(1) }
@@ -1258,10 +1302,11 @@ function setContextPhase(eng, phase) {
 
 
 // Meeting notes → structured memory. Deterministic routing, zero AI: lines that
-// start with decision:/risk:/delivery:/contact:/next: (case-insensitive) go to
-// their LOG_FILES target as dated bullets; everything else lands in context.md
-// as one dated debrief block. contact: lines may carry an inline [signal:x]
-// token anywhere in the text - preserved verbatim so computeSignals can trust it.
+// start with decision:/risk:/delivery:/contact:/next:/time:/budget: (case-insensitive)
+// go to their LOG_FILES target as dated bullets (budget sets Week budget);
+// everything else lands in context.md as one dated debrief block. contact: lines
+// may carry an inline [signal:x] token anywhere in the text - preserved verbatim
+// so computeSignals can trust it.
 // --smart: thin heuristic propose (existing prefixes + light keywords). Not a
 // brain — the agent rewrites .debrief-propose with prefixes; --apply commits.
 // --dry-run prints the routing without writing anything.
@@ -1286,13 +1331,13 @@ function smartProposeText(input) {
     if (!line) continue
     let bare = line
       .replace(/^[-*+]\s+/, '')
-      .replace(/^\*\*(decision|risk|delivery|contact|next):?\*\*:?\s*/i, '$1: ')
+      .replace(new RegExp('^\\*\\*(' + DEBRIEF_PREFIXES + '):?\\*\\*:?\\s*', 'i'), '$1: ')
     if (/^decided:\s+/i.test(bare)) {
       out.push(`decision: ${bare.replace(/^decided:\s+/i, '')}`)
       continue
     }
-    if (/^(decision|risk|delivery|contact|next):\s*/i.test(bare)) {
-      let routed = bare.replace(/^(decision|risk|delivery|contact|next):\s*/i, (m, t) => `${t.toLowerCase()}: `)
+    if (new RegExp('^(' + DEBRIEF_PREFIXES + '):\\s*', 'i').test(bare)) {
+      let routed = bare.replace(new RegExp('^(' + DEBRIEF_PREFIXES + '):\\s*', 'i'), (m, t) => `${t.toLowerCase()}: `)
       if (/^contact:/i.test(routed) && !/\[signal:(red|amber|green)\]/i.test(routed)) {
         const sig = inferContactSignal(routed)
         if (sig) routed = routed.replace(/\s*$/, ` [signal:${sig}]`)
@@ -1318,6 +1363,11 @@ function smartProposeText(input) {
                /\b(gone quiet|champion|resistant|unresponsive|skipped|cooling|signal:)\b/i.test(bare)) {
       const sig = inferContactSignal(bare)
       out.push(sig ? `contact: ${bare} [signal:${sig}]` : `contact: ${bare}`)
+    } else if (/\bspent\s+\d+(?:\.\d+)?\s*h(?:ours?)?\b/i.test(bare) ||
+               /^\d+(?:\.\d+)?\s*h(?:ours?)?\s+\S/i.test(bare)) {
+      out.push(`time: ${bare}`)
+    } else if (/\bweek budget\b/i.test(bare) && parseHours(bare) != null) {
+      out.push(`budget: ${bare}`)
     } else {
       out.push(bare)
     }
@@ -1441,7 +1491,7 @@ function readSealedProposal(eng) {
 function routeDebriefInput(eng, input, { dry, force, sealed = [] }) {
   const d = new Date()
   const date = d.toISOString().slice(0, 10)
-  const counts = { decision: 0, risk: 0, delivery: 0, contact: 0, next: 0 }
+  const counts = { decision: 0, risk: 0, delivery: 0, contact: 0, next: 0, time: 0, budget: 0 }
   const ctxLines = []
   let nextAction = ''
   ensureMemoryGit(eng)
@@ -1454,8 +1504,8 @@ function routeDebriefInput(eng, input, { dry, force, sealed = [] }) {
   for (const raw of routable.split('\n')) {
     let line = raw.trim()
     if (!line) continue
-    const bare = line.replace(/^[-*+]\s+/, '').replace(/^\*\*(decision|risk|delivery|contact|next):?\*\*:?\s*/i, '$1: ')
-    const m = bare.match(/^(decision|risk|delivery|contact|next):\s*(.+)$/i)
+    const bare = line.replace(/^[-*+]\s+/, '').replace(new RegExp('^\\*\\*(' + DEBRIEF_PREFIXES + '):?\\*\\*:?\\s*', 'i'), '$1: ')
+    const m = bare.match(new RegExp('^(' + DEBRIEF_PREFIXES + '):\\s*(.+)$', 'i'))
     if (m) {
       const type = m[1].toLowerCase()
       let body = m[2]
@@ -1468,6 +1518,21 @@ function routeDebriefInput(eng, input, { dry, force, sealed = [] }) {
         if (dry) console.log(`→ context.md ## Next action  - ${previewLine(body)}`)
         else nextAction = body
         counts.next++
+        continue
+      }
+      if (type === 'budget') {
+        const hours = parseHours(body)
+        if (hours == null) {
+          console.error('skipped budget line - need hours (e.g. budget: 4h)')
+          continue
+        }
+        if (dry) console.log(`→ time.md  Week budget ${formatHours(hours)}`)
+        else setWeekBudget(eng, hours, { skipCommit: true })
+        counts.budget++
+        continue
+      }
+      if (type === 'time' && parseHours(body) == null) {
+        console.error('skipped time line - need hours (e.g. time: 2.5h write-back)')
         continue
       }
       const sigInline = (body.match(/\[signal:(red|amber|green)\]/i) || [])[1]
@@ -1550,7 +1615,7 @@ function cmdDebrief(args) {
   const { counts, ctxLines, privateBlocks } = routeDebriefInput(eng, input, { dry, force, sealed })
   if (!dry) {
     const hash = commitMemory(eng, 'debrief', {
-      files: ['decisions.md', 'risks.md', 'delivery.md', 'stakeholders.md', 'context.md', SIGNAL_LEDGER],
+      files: ['decisions.md', 'risks.md', 'delivery.md', 'stakeholders.md', 'context.md', 'time.md', SIGNAL_LEDGER],
     })
     try { fs.unlinkSync(path.join(eng, DEBRIEF_PROPOSE)) } catch (_) {}
     try { fs.unlinkSync(path.join(eng, DEBRIEF_PRIVATE)) } catch (_) {}
@@ -1559,6 +1624,7 @@ function cmdDebrief(args) {
   }
   const plural = {
     decision: 'decisions', risk: 'risks', delivery: 'deliveries', contact: 'contacts', next: 'next actions',
+    time: 'time entries', budget: 'budgets',
   }
   const parts = Object.keys(counts).filter(t => counts[t])
     .map(t => `${counts[t]} ${counts[t] === 1 ? (t === 'next' ? 'next action' : t) : plural[t]}`)
@@ -1973,6 +2039,13 @@ function collectDoctorIssues(eng) {
     }
   }
   if (s.stale) issues.push(`trust signal is STALE (${s.signalAge}d) - reconfirm with fde log contact ... --signal`)
+  // Time hygiene only after they start tracking (budget or a dated hours line).
+  // Empty time.md is not a gap - same spirit as day-1 empty templates.
+  if (s.entries && s.entries.length && !s.hasBudget) {
+    issues.push('hours logged in time.md but no week budget - run: fde log budget 4h')
+  }
+  if (s.starved) issues.push(`starved: ${formatHours(s.spentHours)} of ${formatHours(s.budgetHours)} this week - log time or reallocate`)
+  if (s.hasBudget && s.pulse === 'red') issues.push(`pulse is red - ${s.pulseReason}`)
   if (!readOwner(eng)) issues.push('no .owner - run any write or: fde owner set you@firm.com')
   const gitHealth = memoryGitHealthy(eng)
   if (!gitHealth.ok) {
@@ -2248,7 +2321,7 @@ function cmdDoctor() {
 // Preview by default; --apply commits the scrub to the memory ledger.
 const REDACT_FILES = [
   'decisions.md', 'risks.md', 'delivery.md', 'stakeholders.md', 'context.md',
-  'brief.md', 'reality.md', 'assumptions.md', SIGNAL_LEDGER,
+  'brief.md', 'reality.md', 'assumptions.md', 'time.md', SIGNAL_LEDGER,
 ]
 
 function cmdRedact(args) {
@@ -2538,7 +2611,7 @@ function cmdStatus(args) {
       if (!fs.existsSync(eng)) continue
       const s = computeSignals(eng)
       const note = [s.memoryWarn, (s.dirtyFiles && s.dirtyFiles.length) ? `dirty:${s.dirtyFiles.length}` : '', s.reason || s.topRisk].filter(Boolean).join(' · ').slice(0, 70)
-      rows.push({ name: d, phase: s.phase, trust: s.trust, signalAge: s.signalAge, stale: s.stale, updated: s.updated, reason: note, memoryWarn: s.memoryWarn, dirtyFiles: s.dirtyFiles })
+      rows.push({ name: d, phase: s.phase, trust: s.trust, signalAge: s.signalAge, stale: s.stale, updated: s.updated, reason: note, memoryWarn: s.memoryWarn, dirtyFiles: s.dirtyFiles, pulse: s.pulse, pulseReason: s.pulseReason, spentHours: s.spentHours, budgetHours: s.budgetHours, hasBudget: s.hasBudget, starved: s.starved, touchAge: s.touchAge })
     }
   } else {
     const eng = resolveEngagement()
@@ -2548,17 +2621,26 @@ function cmdStatus(args) {
     }
     const s = computeSignals(eng)
     const note = [s.memoryWarn, (s.dirtyFiles && s.dirtyFiles.length) ? `dirty:${s.dirtyFiles.length}` : '', s.reason || s.topRisk].filter(Boolean).join(' · ').slice(0, 70)
-    rows.push({ name: engagementSlugFromPath(eng), phase: s.phase, trust: s.trust, signalAge: s.signalAge, stale: s.stale, updated: s.updated, reason: note, memoryWarn: s.memoryWarn, dirtyFiles: s.dirtyFiles })
+    rows.push({ name: engagementSlugFromPath(eng), phase: s.phase, trust: s.trust, signalAge: s.signalAge, stale: s.stale, updated: s.updated, reason: note, memoryWarn: s.memoryWarn, dirtyFiles: s.dirtyFiles, pulse: s.pulse, pulseReason: s.pulseReason, spentHours: s.spentHours, budgetHours: s.budgetHours, hasBudget: s.hasBudget, starved: s.starved, touchAge: s.touchAge })
   }
   if (!rows.length) { console.log('no engagements yet'); return }
-  const order = { RED: 0, amber: 1, green: 2 }
-  rows.sort((a, b) => order[a.trust] - order[b.trust])
-  console.log((all ? 'FDE PORTFOLIO' : 'FDE STATUS') + ' - trust-first triage (heuristic: red > amber > green)\n')
+  const trustOrder = { RED: 0, amber: 1, green: 2 }
+  const pulseOrder = { red: 0, amber: 1, green: 2 }
+  rows.sort((a, b) => {
+    const t = (trustOrder[a.trust] ?? 9) - (trustOrder[b.trust] ?? 9)
+    if (t) return t
+    const p = (pulseOrder[a.pulse] ?? 9) - (pulseOrder[b.pulse] ?? 9)
+    if (p) return p
+    return (b.starved ? 1 : 0) - (a.starved ? 1 : 0)
+  })
+  console.log((all ? 'FDE PORTFOLIO' : 'FDE STATUS') + ' - trust-first, then pulse, then starve\n')
   for (const r of rows) {
     // "amber?" = structured signal went stale (>21d) - reconfirm before trusting it
     const label = r.trust + (r.stale ? '?' : '')
     const sig = r.signalAge != null ? `signal ${r.signalAge}d old${r.stale ? ' (STALE - reconfirm)' : ''}  ` : ''
-    console.log(`  [${label.padEnd(6)}] ${r.name.padEnd(24)} phase:${(r.phase === '?' ? 'unset' : r.phase).padEnd(10)} updated:${r.updated.padEnd(8)} ${sig}${r.reason}`)
+    const hours = `${formatHours(r.spentHours)}/${r.hasBudget ? formatHours(r.budgetHours) : '?h'}`
+    const touch = r.touchAge == null ? 'touch —' : r.touchAge === 0 ? 'touch today' : `touch ${r.touchAge}d`
+    console.log(`  [${label.padEnd(6)}] ${r.name.padEnd(24)} pulse:${(r.pulse || '?').padEnd(6)} ${hours.padEnd(10)} ${touch.padEnd(12)} phase:${(r.phase === '?' ? 'unset' : r.phase).padEnd(10)} updated:${r.updated.padEnd(8)} ${sig}${r.reason}`)
     if (r.memoryWarn) console.log(`           memory: ${r.memoryWarn}`)
     if (r.dirtyFiles && r.dirtyFiles.length) {
       console.log(`           ⚠ dirty (uncommitted manual edits): ${r.dirtyFiles.slice(0, 5).join(', ')}`)
@@ -2566,6 +2648,7 @@ function cmdStatus(args) {
   }
   if (!all) console.log('\n(current engagement only - pass --all for the full portfolio)')
   console.log('\ntrust: worst active [signal:x] across stakeholders (latest per person) - a green from B cannot clear an amber/red on A; keyword heuristic only when none exists.')
+  console.log('pulse: last customer touch + hours this week (not product adoption). green ≤3d touch; amber 4–7d or 0h while in touch; red >7d or 0h and last session ≥3d.')
 }
 
 
@@ -2644,6 +2727,7 @@ function cmdDashboard(args) {
     .map(([title, md]) => ({ title, html: render.mdBlockHtml(md, parseMdTable) }))
     e.searchBlob = render.escapeHtml([
       e.name, e.next, e.lastSession, e.reality, e.brief,
+      e.signals.pulse, e.signals.pulseReason,
       ...e.log.map(g => g.text), ...e.risks.map(r => r.text),
       ...e.stakeholders.map(p => `${p.name} ${p.role} ${p.note}`),
       ...e.moreSections.map(s => s.title),
@@ -2823,7 +2907,8 @@ function printUsage() {
   fde resume --init <name> create + bind engagement for this workspace (rebind replaces)
   fde resume --bind        show what this workspace is bound to, and what resolves
   fde triage               TRIAGE block only (hooks / Cursor session entry)
-  fde log <type> <text>    append decision|risk|delivery|contact (contact takes --signal red|amber|green; --force to allow secret-like text)
+  fde log <type> <text>    append decision|risk|delivery|contact|time (contact takes --signal red|amber|green; --force to allow secret-like text)
+  fde log budget <hours>   set this ISO week's planned hours in time.md
   fde log phase <phase>    set engagement phase (land|discover|plan|build|ship|close)
   fde log --undo           remove the last CLI log/debrief entry from memory
   fde debrief [file]       meeting notes → memory (prefixed lines; --dry-run; --force)

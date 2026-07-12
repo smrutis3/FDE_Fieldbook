@@ -33,6 +33,7 @@ const requiredTemplates = [
   'risks.md',
   'delivery.md',
   'assumptions.md',
+  'time.md',
 ]
 
 for (const f of requiredTemplates) {

@@ -95,6 +95,138 @@ function createTrustApi(deps) {
     return ''
   }
 
+  // Hours in "2.5h" / "2 hours" / a bare number (budget only). Never invent.
+  function parseHours(text) {
+    const s = String(text || '').trim()
+    const m = s.match(/(\d+(?:\.\d+)?)\s*h(?:ours?)?\b/i) || s.match(/^(\d+(?:\.\d+)?)$/)
+    if (!m) return null
+    const n = parseFloat(m[1])
+    return Number.isFinite(n) && n >= 0 ? n : null
+  }
+
+  function formatHours(n) {
+    if (n == null || !Number.isFinite(n)) return '0h'
+    const rounded = Math.round(n * 10) / 10
+    return (Number.isInteger(rounded) ? String(rounded) : String(rounded)) + 'h'
+  }
+
+  function startOfIsoWeek(d) {
+    const x = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+    const day = x.getDay() || 7
+    x.setDate(x.getDate() - day + 1)
+    x.setHours(0, 0, 0, 0)
+    return x
+  }
+
+  function daysBetween(dateStr, now) {
+    const t = Date.parse(String(dateStr) + 'T00:00:00')
+    if (Number.isNaN(t)) return null
+    const n = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    return Math.max(0, Math.floor((n.getTime() - t) / 86400000))
+  }
+
+  function inIsoWeek(dateStr, now) {
+    const start = startOfIsoWeek(now)
+    const end = new Date(start)
+    end.setDate(end.getDate() + 7)
+    const t = Date.parse(String(dateStr) + 'T00:00:00')
+    return !Number.isNaN(t) && t >= start.getTime() && t < end.getTime()
+  }
+
+  function isoWeekday(now) {
+    return now.getDay() || 7
+  }
+
+  function parseTimeLedger(md, now) {
+    const when = now || new Date()
+    const budgetHours = parseHours((String(md || '').match(/\*\*Week budget:\*\*\s*([^\n]*)/i) || [])[1] || '')
+    const entries = []
+    for (const raw of String(md || '').split('\n')) {
+      const m = raw.trim().match(/^-\s*\[(\d{4}-\d{2}-\d{2})\]\s*(.*)$/)
+      if (!m) continue
+      const hours = parseHours(m[2])
+      if (hours == null) continue
+      entries.push({ date: m[1], hours, text: m[2].trim() })
+    }
+    const spentHours = entries.filter(e => inIsoWeek(e.date, when)).reduce((n, e) => n + e.hours, 0)
+    const budget = budgetHours == null ? 0 : budgetHours
+    return {
+      budgetHours: budget,
+      hasBudget: budgetHours != null && budgetHours > 0,
+      spentHours,
+      remainingHours: Math.max(0, budget - spentHours),
+      weekStart: startOfIsoWeek(when).toISOString().slice(0, 10),
+      entries,
+    }
+  }
+
+  // Latest dated customer touch: Signal history / dated contact bullets, plus
+  // the CLI signal ledger. Table prose dates are not a touch.
+  function lastCustomerTouch(stakeMd, ledgerMd) {
+    let latest = null
+    const chunks = [sectionBody(stakeMd, 'Signal history'), ledgerMd, stakeMd]
+    for (const chunk of chunks) {
+      for (const raw of String(chunk || '').split('\n')) {
+        const t = raw.trim()
+        const dm = t.match(/^-\s*\[(\d{4}-\d{2}-\d{2})\]\s*(.*)$/)
+        if (!dm) continue
+        const date = dm[1]
+        const text = dm[2]
+          .replace(/\[signal:(red|amber|green)\]/i, '')
+          .replace(/\[@[^\]]+\]/g, '')
+          .trim()
+        if (!latest || date >= latest.date) latest = { date, text }
+      }
+    }
+    return latest
+  }
+
+  function computePulse(eng, opts) {
+    const now = (opts && opts.now) || new Date()
+    const ageDays = opts && opts.ageDays != null ? opts.ageDays : Infinity
+    const stake = readClean(eng, 'stakeholders.md')
+    const time = parseTimeLedger(readClean(eng, 'time.md'), now)
+    const touch = lastCustomerTouch(stake, readClean(eng, SIGNAL_LEDGER))
+    const touchAge = touch ? daysBetween(touch.date, now) : null
+    const weekUnderway = isoWeekday(now) >= 2
+    const noHours = time.spentHours === 0
+    const starved = time.hasBudget && noHours && (weekUnderway || ageDays >= 3)
+    const noShow = ageDays >= 3 && noHours
+
+    let pulse = 'amber'
+    let pulseReason = 'no customer touch logged'
+    if (touchAge != null && touchAge > 7) {
+      pulse = 'red'
+      pulseReason = `last touch ${touchAge}d${touch.text ? ` (${touch.text.slice(0, 60)})` : ''}`
+    } else if (noShow) {
+      pulse = 'red'
+      pulseReason = time.hasBudget
+        ? `0h of ${formatHours(time.budgetHours)} this week`
+        : '0h this week and last session ≥3d'
+    } else if (touchAge != null && touchAge >= 4) {
+      pulse = 'amber'
+      pulseReason = `last touch ${touchAge}d${touch.text ? ` (${touch.text.slice(0, 60)})` : ''}`
+    } else if (touchAge != null && touchAge <= 3 && time.hasBudget && noHours && weekUnderway) {
+      pulse = 'amber'
+      pulseReason = `0h of ${formatHours(time.budgetHours)} this week`
+    } else if (touchAge != null && touchAge <= 3) {
+      pulse = 'green'
+      pulseReason = touchAge === 0 ? 'last touch today' : `last touch ${touchAge}d`
+    } else if (starved) {
+      pulse = 'red'
+      pulseReason = `0h of ${formatHours(time.budgetHours)} this week`
+    }
+
+    return {
+      pulse,
+      pulseReason,
+      touchAge,
+      touchText: touch ? touch.text : '',
+      starved,
+      ...time,
+    }
+  }
+
   function computeSignals(eng) {
     // readClean, not readEng: status/dashboard echo topRisk and stakeholder lines
     // to the terminal and the rendered HTML - a <private> risk must never surface.
@@ -157,9 +289,11 @@ function createTrustApi(deps) {
       updated = ageDays === 0 ? 'today' : `${ageDays}d ago`
     } catch (_) {}
     const dirty = memoryDirtyManual(eng)
+    const pulseInfo = computePulse(eng, { ageDays, now: new Date() })
     return {
       phase, trust, signalAge, stale, topRisk, reason, memoryWarn: mem.warn,
       dirtyFiles: dirty, openRisks, nextAction, updated, ageDays,
+      ...pulseInfo,
     }
   }
 
@@ -167,12 +301,16 @@ function createTrustApi(deps) {
     const s = computeSignals(eng)
     const label = s.trust + (s.stale ? '?' : '')
     const phase = s.phase === '?' ? 'unset' : s.phase
+    const hours = `${formatHours(s.spentHours)}/${s.hasBudget ? formatHours(s.budgetHours) : '?h'}`
     const lines = [
-      `TRIAGE  [${label.padEnd(6)}]  phase:${phase}  updated:${s.updated}  open risks:${s.openRisks}`,
+      `TRIAGE  [${label.padEnd(6)}]  phase:${phase}  pulse:${s.pulse}  ${hours}  updated:${s.updated}  open risks:${s.openRisks}`,
     ]
     if (s.reason) {
       const age = s.signalAge != null ? ` (${s.signalAge}d old${s.stale ? ', STALE - reconfirm' : ''})` : ''
       lines.push(`  trust: ${s.reason}${age}`)
+    }
+    if (s.pulse === 'red' || s.starved) {
+      lines.push(`  pulse: ${s.pulseReason}`)
     }
     // Always surface corruption / unreadable memory - even when trust still reads green
     if (s.memoryWarn) lines.push(`  memory: ${s.memoryWarn}`)
@@ -191,6 +329,11 @@ function createTrustApi(deps) {
     parsePhase,
     countOpenRisks,
     nextActionLine,
+    parseHours,
+    formatHours,
+    parseTimeLedger,
+    lastCustomerTouch,
+    computePulse,
     computeSignals,
     resumeTriage,
   }

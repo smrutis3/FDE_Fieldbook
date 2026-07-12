@@ -7,5 +7,9 @@
 | Platform lead | neutral | Offered repo access Day 2 |
 | Prior vendor (left) | unknown | Ask if partial migration exists |
 
+## Signal history
+
+- [2026-09-07] [signal:green] Finance controller joined the staging walkthrough - agreed to one night without Excel
+
 **Trust:** green Day 1 - no adverse signals yet.  
 **Action:** get finance on next call before committing API-only fix.

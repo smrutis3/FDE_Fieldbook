@@ -98,7 +98,13 @@ function formatLogDate(iso) {
   return m ? `${MONTHS[parseInt(m[2], 10) - 1]} ${parseInt(m[3], 10)}` : iso
 }
 function trustWord(t) { return t === 'green' ? 'steady' : t === 'amber' ? 'watch' : 'at risk' }
+function pulseWord(t) { return t === 'green' ? 'in touch' : t === 'amber' ? 'cooling' : 'quiet' }
 function dotClassFor(trust) { return trust === 'RED' ? 'red' : trust }
+function formatHours(n) {
+  if (n == null || !Number.isFinite(n)) return '0h'
+  const rounded = Math.round(n * 10) / 10
+  return (Number.isInteger(rounded) ? String(rounded) : String(rounded)) + 'h'
+}
 
 // Two-pane fieldbook: left rail (search + today + per-client nav), right main
 // panel with a Today queue view and a per-client detail view, plus a command
@@ -493,9 +499,16 @@ ${e.reality ? `<p class="fb-why fb-why-reality"><span class="fb-accent-label">Wh
       .map((n, i) => n ? `<span style="color:${signalColor(['green', 'amber', 'red'][i])}">${dotGlyph(['green', 'amber', 'red'][i])} ${n}</span>` : null)
       .filter(Boolean).join(' &nbsp; ')
     : ''
+  const hoursLabel = `${formatHours(e.signals.spentHours)} / ${e.signals.hasBudget ? formatHours(e.signals.budgetHours) : '?h'}`
+  const touchLabel = e.signals.touchAge == null ? 'not logged'
+    : e.signals.touchAge === 0 ? 'today'
+    : `${e.signals.touchAge} days ago`
   const vitalsRows = [
     ['trust', trustWord(e.signals.trust), dotClass],
     e.signals.signalAge != null ? ['trust confirmed', e.signals.signalAge === 0 ? 'today' : `${e.signals.signalAge} days ago${e.signals.stale ? ' - recheck' : ''}`, e.signals.stale ? 'red' : ''] : null,
+    ['pulse', pulseWord(e.signals.pulse), e.signals.pulse === 'green' ? 'green' : e.signals.pulse === 'amber' ? 'amber' : 'red'],
+    ['last customer touch', touchLabel, e.signals.pulse === 'red' ? 'red' : e.signals.pulse === 'amber' ? 'amber' : ''],
+    ['hours this week', hoursLabel, e.signals.starved ? 'red' : ''],
     ['phase', e.phaseLabel, ''],
     e.days != null ? ['started', e.days === 0 ? 'today' : `${e.days} days ago`, ''] : null,
     ['last updated', e.signals.updated, e.quiet ? 'amber' : ''],
@@ -585,16 +598,27 @@ function paletteItemsHtml(ordered) {
 }
 
 function buildFieldbookHtml({ engagements, today }) {
-  // rail + Today queue share one order: trust-first (red, amber, green)
-  const tierRank = { RED: 0, amber: 1, green: 2 }
-  const ordered = engagements.slice().sort((a, b) => tierRank[a.signals.trust] - tierRank[b.signals.trust])
-  const attentionCount = engagements.filter(e => e.signals.trust !== 'green').length
+  // rail + Today queue: trust-first, then pulse, then starve
+  const trustRank = { RED: 0, amber: 1, green: 2 }
+  const pulseRank = { red: 0, amber: 1, green: 2 }
+  const ordered = engagements.slice().sort((a, b) => {
+    const t = (trustRank[a.signals.trust] ?? 9) - (trustRank[b.signals.trust] ?? 9)
+    if (t) return t
+    const p = (pulseRank[a.signals.pulse] ?? 9) - (pulseRank[b.signals.pulse] ?? 9)
+    if (p) return p
+    return (b.signals.starved ? 1 : 0) - (a.signals.starved ? 1 : 0)
+  })
+  const attentionCount = engagements.filter(e =>
+    e.signals.trust !== 'green' || e.signals.pulse === 'red' || e.signals.starved
+  ).length
   const highRiskTotal = engagements.reduce((n, e) => n + e.highRisks, 0)
 
   const railItems = ordered.map(railItemHtml).join('\n')
   const todayQueue = ordered.map(queueRowHtml).join('\n') || '<p class="empty">No engagements yet.</p>'
   const flagRows = []
   ordered.forEach(e => {
+    if (e.signals.pulse === 'red') flagRows.push(flagRowHtml(e, `pulse red - ${e.signals.pulseReason}`, 'red'))
+    else if (e.signals.starved) flagRows.push(flagRowHtml(e, `starved - ${formatHours(e.signals.spentHours)} of ${formatHours(e.signals.budgetHours)} this week`, 'red'))
     if (e.quiet) flagRows.push(flagRowHtml(e, `quiet - last touched ${e.signals.updated}`, 'amber'))
     if (e.highRisks) flagRows.push(flagRowHtml(e, `${e.highRisks} high risk${e.highRisks > 1 ? 's' : ''} open`, 'red'))
   })

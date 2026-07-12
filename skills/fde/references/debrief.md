@@ -11,7 +11,7 @@
 ## Honest contract (read once)
 
 - The `fde` CLI is **local, deterministic, no AI**. `--smart` is a **gate + writer**, not a brain.
-- It keeps lines that already have `decision:` / `risk:` / `delivery:` / `contact:` / `next:` prefixes, plus a thin keyword pass (e.g. "we agreed", person+verb lines, "open question").
+- It keeps lines that already have `decision:` / `risk:` / `delivery:` / `contact:` / `next:` / `time:` / `budget:` prefixes, plus a thin keyword pass (e.g. "we agreed", person+verb lines, "open question", "spent 2h").
 - Real messy notes without prefixes often route **0 useful lines** — everything else lands as a context dump. That is expected. **You are the router:** rewrite `.debrief-propose` with type prefixes, then `--apply`.
 - `.debrief-propose` is raw lines only (no routing annotations). "Edit if mis-routed" means **rewrite the line with the right prefix**, not leave a comment in the file.
 
@@ -25,6 +25,8 @@
    - `decision: agreed chargebacks stay phase 2 — Priya`
    - `risk: legal may reopen scope if we slip the SOW date`
    - `contact: Priya pushed hard on Friday deck [signal:amber]`
+   - `time: 2h write-back design review`
+   - `budget: 4h`
    - `next: send one-pager before Thursday 9am`
    - unprefixed lines stay context color only
 4. Show the **proposed** routing in plain language (what would become decisions, risks, contacts, next).
@@ -43,7 +45,7 @@ If `--smart` is unavailable or you already have clean prefixes:
    - **Stakeholder signals** - tone shifts with evidence → green/amber/red
    - **Risks** - new / confirmed / retired
    - **Open questions** - what to chase next
-2. Format lines as `decision:` / `risk:` / `delivery:` / `contact:` / `next:` (contacts may end with `[signal:green|amber|red]`).
+2. Format lines as `decision:` / `risk:` / `delivery:` / `contact:` / `next:` / `time:` / `budget:` (contacts may end with `[signal:green|amber|red]`; `time:` needs hours, e.g. `2.5h …`).
 3. Show that structured version to the FDE for confirmation.
 4. Pipe to `fde debrief` (or write a file and run it).
 
