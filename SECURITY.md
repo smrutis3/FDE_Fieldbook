@@ -1,6 +1,6 @@
 # Security
 
-fdeops stores **engagement-sensitive** material on your machine. Treat `.fde/` like confidential work papers.
+FDE Fieldbook stores **engagement-sensitive** material on your machine. Treat `.fde/` like confidential work papers.
 
 ## Never commit engagement data
 
@@ -12,7 +12,7 @@ If `.fde/` was committed: treat as a data incident - purge history, notify per y
 
 ## Install boundary
 
-Install and `fdeops init` on **your** environment only. Do not require clients or platform teams to run fdeops on their infrastructure.
+Install and `fdeops init` on **your** environment only. Do not require clients or platform teams to run FDE Fieldbook on their infrastructure.
 
 ## AI providers
 
@@ -32,7 +32,7 @@ What to expect: acknowledgement within 5 days, an assessment with a fix or a rea
 
 ### In scope
 
-Anything that breaks the guarantees fdeops makes: `<private>` content reaching a model, a dashboard, a hook, an MCP response, or a structured memory file; engagement memory leaking between clients; the installer or CLI destroying or exfiltrating data; a write applied without human confirmation; the CLI reaching the network.
+Anything that breaks the guarantees FDE Fieldbook makes: `<private>` content reaching a model, a dashboard, a hook, an MCP response, or a structured memory file; engagement memory leaking between clients; the installer or CLI destroying or exfiltrating data; a write applied without human confirmation; the CLI reaching the network.
 
 ### Out of scope
 

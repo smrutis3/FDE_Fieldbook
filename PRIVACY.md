@@ -1,23 +1,23 @@
 # Privacy Policy
 
-fdeops is local tooling. No fdeops-operated backend, telemetry, or accounts.
+FDE Fieldbook is local tooling. No FDE Fieldbook-operated backend, telemetry, or accounts.
 
-## What fdeops does
+## What FDE Fieldbook does
 
 - Reads and writes files under **`FDEOPS_ENGAGEMENT`** (default `~/fde-engagements/<name>/.fde/`)
 - Configures how your AI assistant behaves during an engagement
 - Keeps engagement context on **your machine** unless you deliberately use an in-workspace `.fde/`
 
-## What fdeops does not do
+## What FDE Fieldbook does not do
 
 - Collect usage analytics
-- Send engagement data to fdeops servers
+- Send engagement data to FDE Fieldbook servers
 - Register users or integrate third-party SaaS on your behalf
 - Ambient sync or background polling of email, Slack, Granola, or any other source
 
 ## Ingest (optional MCP sink)
 
-The optional ingest MCP (`mcp/fdeops-ingest`) and `fde ingest` CLI verbs **stage local files only** — raw pulls land in `<engagement>/.inbox/` beside the fieldbook. Third-party **source** MCPs (Gmail, Granola, Notion, custom) are **user-configured** in your AI tool; they are outside fdeops and carry their own credentials and privacy terms. fdeops never stores those credentials and does not call those services from the core CLI.
+The optional ingest MCP (`mcp/fdeops-ingest`) and `fde ingest` CLI verbs **stage local files only** — raw pulls land in `<engagement>/.inbox/` beside the fieldbook. Third-party **source** MCPs (Gmail, Granola, Notion, custom) are **user-configured** in your AI tool; they are outside FDE Fieldbook and carry their own credentials and privacy terms. FDE Fieldbook never stores those credentials and does not call those services from the core CLI.
 
 Nothing enters `.fde/` without your confirm step (`fde ingest apply`). There is no ambient sync: pulls happen when you (or your agent on your instruction) fetch and stage.
 
@@ -25,11 +25,11 @@ Nothing enters `.fde/` without your confirm step (`fde ingest apply`). There is 
 
 ## Your data
 
-Engagement notes may include sensitive business information. You control storage, backup, and sharing. fdeops does not encrypt or police commits for you.
+Engagement notes may include sensitive business information. You control storage, backup, and sharing. FDE Fieldbook does not encrypt or police commits for you.
 
 ## Your engagements folder is your NDA surface
 
-fdeops deliberately moves engagement memory **out of the client's repo** into `~/fde-engagements/` on your machine - that is the design, and it has a consequence you must own: whatever syncs or backs up your home directory now carries client-derived notes (branch names, commit messages, uncommitted filenames from the session-end hook; stakeholder observations you log yourself).
+FDE Fieldbook deliberately moves engagement memory **out of the client's repo** into `~/fde-engagements/` on your machine - that is the design, and it has a consequence you must own: whatever syncs or backs up your home directory now carries client-derived notes (branch names, commit messages, uncommitted filenames from the session-end hook; stakeholder observations you log yourself).
 
 Concretely:
 
@@ -46,7 +46,7 @@ Notes about identifiable people (stakeholder signals, contact logs) may carry da
 
 ## AI assistants
 
-Transmission to model providers (e.g. Anthropic) is outside fdeops. See that provider’s privacy policy.
+Transmission to model providers (e.g. Anthropic) is outside FDE Fieldbook. See that provider’s privacy policy.
 
 `<private>` tags are an operational boundary plus CLI redaction: `fde resume`, `fde prep`, `fde dashboard`, receipts, and hook-injected context strip them. Opening the raw markdown with an agent file tool bypasses that redaction - keep secrets out of those tools and out of prompts.
 

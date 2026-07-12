@@ -1,4 +1,4 @@
-# fdeops Engagement Schema v1
+# FDE Fieldbook Engagement Schema v1
 
 Open layout for engagement memory. **Default path:** `~/fde-engagements/<name>/.fde/` (create + bind with `fde resume --init <name>` from the client workspace). Private to the engineer - not in shared git by default.
 

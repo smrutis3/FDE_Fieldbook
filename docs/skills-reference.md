@@ -1,4 +1,4 @@
-# fdeops Reference - one skill, 37 methods across 6 domains
+# FDE Fieldbook Reference - one skill, 37 methods across 6 domains
 
 v3 ships **one skill**: `@fde` ([skills/fde/SKILL.md](../skills/fde/SKILL.md)). You describe the situation; it routes to a phase and follows that phase's method from [skills/fde/references/](../skills/fde/references/). Engagement memory lives in `~/fde-engagements/<name>/.fde/` (one folder per customer).
 

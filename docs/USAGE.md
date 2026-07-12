@@ -1,6 +1,6 @@
-# fdeops usage guide
+# FDE Fieldbook usage guide
 
-**What it is:** the engagement layer for **you** (human FDE) + your **AI coding agent** - `@fde` routes methods; `.fde/` holds client-scoped memory on your machine.
+**What it is:** FDE Fieldbook — the engagement layer for **you** (human FDE) + your **AI coding agent** - `@fde` routes methods; `.fde/` holds client-scoped memory on your machine.
 
 **Terminology:** [README § Who this is for](../README.md#who-this-is-for) - **"agent" = AI software, not a human.**
 
@@ -64,7 +64,7 @@ When a transcript or email is too large to paste, or lives in Granola/Slack/Noti
 
 **Daily without MCP:** paste to `@fde` or `fde ingest stage` a file. That is the complete product.
 
-**Optional pull:** `@fde I want to connect Granola` (or Slack / Notion). You add **that** source MCP; FDEOps does not bundle it and does not push back. Then `@fde pull today's Acme transcript`. The agent fetches text and runs `fde ingest` in this bound workspace (stage → propose → you confirm → apply).
+**Optional pull:** `@fde I want to connect Granola` (or Slack / Notion). You add **that** source MCP; FDE Fieldbook does not bundle it and does not push back. Then `@fde pull today's Acme transcript`. The agent fetches text and runs `fde ingest` in this bound workspace (stage → propose → you confirm → apply).
 
 **Directly (zero tokens, you already have the file):**
 
@@ -198,9 +198,9 @@ One folder per client, one binding per workspace. Never merge contexts. `fde sta
 
 ---
 
-## What fdeops does not do
+## What FDE Fieldbook does not do
 
-The skills are methods refined from real engagements, not autonomy - they tell you what to check, not what to decide. Concretely, fdeops does not:
+The skills are methods refined from real engagements, not autonomy - they tell you what to check, not what to decide. Concretely, FDE Fieldbook does not:
 
 - Replace **you** in meetings or politics
 - Grant repo access or stakeholder buy-in
