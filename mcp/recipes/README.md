@@ -1,6 +1,6 @@
 # Ingest source recipes
 
-FDEOps does **not** bundle Granola / Slack / Notion OAuth and does **not** push to those tools.
+FDE Fieldbook does **not** bundle Granola / Slack / Notion OAuth and does **not** push to those tools.
 
 **Daily (no MCP):** paste notes to `@fde debrief`, or drop a file ([file.md](./file.md)).
 

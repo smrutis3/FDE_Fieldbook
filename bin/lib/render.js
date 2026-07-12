@@ -487,7 +487,7 @@ ${e.reality ? `<p class="fb-why fb-why-reality"><span class="fb-accent-label">Wh
   // Now/Why so that column's natural reading width doesn't leave the top of
   // the page empty on a wide screen, and carries enough real rows to earn
   // roughly the same height instead of floating short beside a tall column.
-  // Plain English, not fdeops shorthand - a junior FDE reading this for the
+  // Plain English, not FDE Fieldbook shorthand - a junior FDE reading this for the
   // first time gets the same clear meaning as someone who wrote the CLI.
   // "signal" (the --signal flag's own word) becomes "trust"; a bare day
   // count becomes "started: 3 days ago" in the same relative-time phrasing
@@ -637,8 +637,8 @@ function buildFieldbookHtml({ engagements, today }) {
 <div class="fb-app">
 <header class="fb-header">
 <div class="fb-brand">
-<span class="fb-wordmark">FDEOPS</span>
-<span class="fb-tagline">fieldbook</span>
+<span class="fb-wordmark">FDE Fieldbook</span>
+<span class="fb-tagline">local</span>
 ${engagements.length ? `<span class="fb-need">${attentionCount}/${engagements.length} need you</span>` : ''}
 </div>
 <div class="fb-spacer"></div>

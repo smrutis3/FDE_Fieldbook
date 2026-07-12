@@ -1,13 +1,13 @@
-# FDEOps MCP packages
+# FDE Fieldbook MCP packages
 
-FDEOps MCP servers follow a **pluggable source model**: core owns the **sink**, sources are **user-added**.
+FDE Fieldbook MCP servers follow a **pluggable source model**: core owns the **sink**, sources are **user-added**.
 
 ## Sink vs sources
 
 | Role | Owner | Examples |
 |------|-------|----------|
 | **Source** | FDE configures separately | Granola, Slack, Notion, Gmail, file |
-| **Sink** | FDEOps (`fdeops-ingest`) | stage → propose → apply into engagement memory |
+| **Sink** | FDE Fieldbook (`fdeops-ingest`) | stage → propose → apply into engagement memory |
 
 Source MCPs fetch raw text from SaaS APIs using credentials the FDE manages. The ingest MCP never stores OAuth tokens or calls external services — it only shells out to the local `fde` CLI.
 
@@ -48,6 +48,6 @@ Source MCPs are **not** bundled in fdeops. To add Granola, Gmail, or another pro
 2. Configure `fdeops-ingest` separately (see [`fdeops-ingest/README.md`](./fdeops-ingest/README.md)).
 3. In your daily workflow, the agent uses source tools to fetch, then ingest tools to stage and commit.
 
-FDEOps credentials stay local to the CLI; source MCP credentials stay with that MCP.
+FDE Fieldbook credentials stay local to the CLI; source MCP credentials stay with that MCP.
 
 **Non-goals:** no bundled OAuth/connectors, no ambient sync, no unreviewed writes to `.fde/`. Method: [`skills/fde/references/ingest.md`](../skills/fde/references/ingest.md).

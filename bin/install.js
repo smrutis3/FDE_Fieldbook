@@ -326,7 +326,7 @@ function cmdInit(engagementName) {
 
 function cmdInstall(opts = {}) {
   console.log('')
-  console.log('  fdeops - installs on YOUR machine only')
+  console.log('  FDE Fieldbook - installs on YOUR machine only')
   console.log('')
   installSkills(opts)
   console.log('  Skills → ~/.claude/skills/')

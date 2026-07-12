@@ -1,6 +1,6 @@
 # Recipe: Granola-shaped meeting transcripts
 
-**Use when:** meeting notes live in Granola (or a similar notes MCP). FDEOps does not ship a Granola server — you add whichever MCP/export path you trust.
+**Use when:** meeting notes live in Granola (or a similar notes MCP). FDE Fieldbook does not ship a Granola server — you add whichever MCP/export path you trust.
 
 Daily path if the notes are already in chat or on disk: paste to `@fde debrief` or [file.md](./file.md). This recipe is only for **pull**.
 
@@ -14,7 +14,7 @@ The sink is **`fde ingest` in this bound workspace.** You do not need `fdeops-in
 
 ### Example mcp.json shape (illustrative)
 
-Replace command/args with whatever the real Granola MCP documents. FDEOps only needs *some* tool that returns transcript text.
+Replace command/args with whatever the real Granola MCP documents. FDE Fieldbook only needs *some* tool that returns transcript text.
 
 ```json
 {

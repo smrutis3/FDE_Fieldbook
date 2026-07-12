@@ -1,6 +1,6 @@
 # Recipe: Notion docs / meeting notes
 
-**Use when:** useful engagement notes live in Notion. FDEOps does not ship a Notion server — use a Notion MCP (or export markdown). We do not write back to Notion.
+**Use when:** useful engagement notes live in Notion. FDE Fieldbook does not ship a Notion server — use a Notion MCP (or export markdown). We do not write back to Notion.
 
 ## Setup (once)
 
@@ -42,7 +42,7 @@ The sink is **`fde ingest` in this bound workspace.** `fdeops-ingest` MCP is opt
 
 ## Never
 
-- Create or edit Notion pages from FDEOps.
+- Create or edit Notion pages from FDE Fieldbook.
 - Ambient-sync a database.
 
 ## Common fails

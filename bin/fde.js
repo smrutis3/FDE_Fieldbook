@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * fde - the deterministic core of fdeops.
+ * fde - the deterministic core of FDE Fieldbook.
  * Real tool, no AI required: recon, memory ops, portfolio status.
  * The @fde skill calls these for mechanics and adds judgment on top.
  *
@@ -2899,7 +2899,7 @@ ${fs.existsSync(html) ? `\n  Open the fieldbook:  ${html}` : ''}
 }
 
 function printUsage() {
-  console.log(`fde - deterministic core of fdeops
+  console.log(`fde - deterministic core of FDE Fieldbook
   fde demo                 the whole loop on a fake client (fde demo --clean removes it)
   fde scan                 day-1 recon of this repo (facts, no AI)
   fde resume               load this workspace's engagement memory (bounded)

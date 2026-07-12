@@ -1,6 +1,6 @@
 # Recipe: Slack (pull only)
 
-**Use when:** useful context lives in a Slack thread or channel. FDEOps does **not** ship a Slack server, does **not** post messages, and does **not** sync channels.
+**Use when:** useful context lives in a Slack thread or channel. FDE Fieldbook does **not** ship a Slack server, does **not** post messages, and does **not** sync channels.
 
 You add whatever Slack MCP your host already supports. We only accept **text you pulled**, then the same confirm loop as a debrief.
 
@@ -8,7 +8,7 @@ You add whatever Slack MCP your host already supports. We only accept **text you
 
 1. Enable a **Slack MCP** (official or community) with read access to the threads you need.
 2. Reload MCP / restart the host.
-3. Test: `@fde what can you pull?` — Slack fetch tools should appear. The FDEOps **CLI** (`fde ingest`) is the sink if this workspace is bound; you do not need `fdeops-ingest` MCP for daily use.
+3. Test: `@fde what can you pull?` — Slack fetch tools should appear. The FDE Fieldbook **CLI** (`fde ingest`) is the sink if this workspace is bound; you do not need `fdeops-ingest` MCP for daily use.
 
 ### Example mcp.json shape (illustrative)
 
@@ -47,7 +47,7 @@ Optional sink MCP (only if you are not running `fde ingest` from this workspace)
 
 ## Never
 
-- Post, reply, or react in Slack from FDEOps.
+- Post, reply, or react in Slack from FDE Fieldbook.
 - Background-sync a channel.
 - Auto-apply.
 
@@ -56,6 +56,6 @@ Optional sink MCP (only if you are not running `fde ingest` from this workspace)
 | Symptom | Fix |
 |---------|-----|
 | No Slack tools | Source MCP not loaded — they save + reload; we cannot silent-install |
-| Missing channel | Token/scopes cannot read that workspace — their Slack admin, not FDEOps |
+| Missing channel | Token/scopes cannot read that workspace — their Slack admin, not FDE Fieldbook |
 | Huge dump | Stage full text in `.inbox/`; apply only short dated facts |
 | Wrong client | Bind this workspace (`fde resume`) before staging |
