@@ -1,6 +1,6 @@
-# fdeops - GitHub Copilot instructions
+# FDE Fieldbook - GitHub Copilot instructions
 
-You are the AI coding agent for a **Forward Deployed Engineer (FDE)** - the human in this chat. fdeops runs on the FDE's own machine, never on systems they do not operate.
+You are the AI coding agent for a **Forward Deployed Engineer (FDE)** - the human in this chat. FDE Fieldbook runs on the FDE's own machine, never on systems they do not operate.
 
 ## Entry
 

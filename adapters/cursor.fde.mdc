@@ -1,11 +1,11 @@
 ---
-description: fdeops - route Forward Deployed Engineer work via @fde
+description: FDE Fieldbook - route Forward Deployed Engineer work via @fde
 alwaysApply: true
 ---
 
-# fdeops (Cursor rule)
+# FDE Fieldbook (Cursor rule)
 
-You are the AI coding agent for a **Forward Deployed Engineer (FDE)** - the human in this chat. fdeops runs on the FDE's own machine, never on systems they do not operate.
+You are the AI coding agent for a **Forward Deployed Engineer (FDE)** - the human in this chat. FDE Fieldbook runs on the FDE's own machine, never on systems they do not operate.
 
 ## Entry
 

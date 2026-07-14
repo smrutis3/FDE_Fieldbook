@@ -1,6 +1,6 @@
-# Installing fdeops
+# Installing FDE Fieldbook
 
-fdeops installs on **your laptop** - where **your AI coding agent** runs. Not on client servers, CI, or environments you do not own.
+FDE Fieldbook installs on **your laptop** - where **your AI coding agent** runs. Not on client servers, CI, or environments you do not own.
 
 **Terminology:** **You** = human FDE. **Agent** = AI coding software (e.g. Claude Code), never a person. See [README § Who this is for](../README.md#who-this-is-for).
 
@@ -33,7 +33,7 @@ Type `@fde` in the AI chat and start working.
 |-----------|---------|
 | Claude Code only | Marketplace plugin (above); run `node bin/install.js` once for hooks on disk |
 | Multiple AI tools or air-gap | Git clone + `node bin/install.js`, then adapters per tool |
-| Quick trial, no install | `npx fdeops scan` (uses **fdeops v3.0.0 or later from npm** - the npm version, not your npm client's version) |
+| Quick trial, no install | `npx fdeops scan` (uses **FDE Fieldbook v3.0.0 or later from npm** - the npm version, not your npm client's version) |
 
 ---
 
@@ -87,7 +87,7 @@ One skill file powers every tool. Drop the right adapter into the **client works
 
 ```bash
 node bin/install.js adapters /path/to/client-workspace
-# or: npx fdeops@latest adapters <dir>   (fdeops v3.2.0+ on npm)
+# or: npx fdeops@latest adapters <dir>   (FDE Fieldbook v3.2.0+ on npm)
 ```
 
 Defaults to the current directory if no path is given.
@@ -100,13 +100,13 @@ Defaults to the current directory if no path is given.
 | GitHub Copilot | `.github/copilot-instructions.md` |
 | Claude Code | `CLAUDE.md` (plus the plugin above) |
 
-Existing `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` files are never clobbered - an fdeops pointer block is appended once (idempotent). See [`adapters/`](../adapters/README.md) for the templates and the design.
+Existing `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` files are never clobbered - an FDE Fieldbook pointer block is appended once (idempotent). See [`adapters/`](../adapters/README.md) for the templates and the design.
 
 ---
 
 ## Agent Plugins clients
 
-fdeops is packaged as an [Agent Plugins 1.0.0](https://agent-plugins.org/specification) plugin: the repository root is the plugin root, with `plugin.json`, the `@fde` skill under `skills/fde/`, and the ingest MCP sink declared in `mcp.json`. A client that supports the format loads all three from a checkout or the npm tarball with no per-client wiring and no absolute paths.
+FDE Fieldbook is packaged as an [Agent Plugins 1.0.0](https://agent-plugins.org/specification) plugin: the repository root is the plugin root, with `plugin.json`, the `@fde` skill under `skills/fde/`, and the ingest MCP sink declared in `mcp.json`. A client that supports the format loads all three from a checkout or the npm tarball with no per-client wiring and no absolute paths.
 
 The format covers packaging only - it defines no install mechanism, permissions, or trust model, so nothing above changes. Claude Code keeps using `.claude-plugin/` and the hooks; other tools keep using the adapters.
 
@@ -159,23 +159,23 @@ When set, it takes precedence over the registry. A `~/.claude/FDEOPS-CLAUDE.md` 
 cd fdeops && git pull && node bin/install.js
 ```
 
-Or via npm: `npx fdeops@latest` (fetches the latest published fdeops).
+Or via npm: `npx fdeops@latest` (fetches the latest published FDE Fieldbook).
 
 ### What the installer will not touch
 
-Every skill directory fdeops creates under `~/.claude/skills/` carries a `.fdeops-managed` marker, and the installer only removes or overwrites directories that have it. If you wrote your own skill whose name collides with one fdeops ships or shipped in v2 (`healthcare-fde`, `fintech-fde`, `gov-fde`, `fde-*`), it is left untouched and reported:
+Every skill directory FDE Fieldbook creates under `~/.claude/skills/` carries a `.fdeops-managed` marker, and the installer only removes or overwrites directories that have it. If you wrote your own skill whose name collides with one FDE Fieldbook ships or shipped in v2 (`healthcare-fde`, `fintech-fde`, `gov-fde`, `fde-*`), it is left untouched and reported:
 
 ```text
-  skip   1 skill dir(s) fdeops did not create - removing them would destroy your own work:
+  skip   1 skill dir(s) FDE Fieldbook did not create - removing them would destroy your own work:
            ~/.claude/skills/healthcare-fde
-         move or delete them yourself, or re-run with --force to let fdeops take them over
+         move or delete them yourself, or re-run with --force to let FDE Fieldbook take them over
 ```
 
-Delete a `.fdeops-managed` marker to make fdeops treat that directory as yours from then on. `node bin/install.js --force` overrides the check.
+Delete a `.fdeops-managed` marker to make FDE Fieldbook treat that directory as yours from then on. `node bin/install.js --force` overrides the check.
 
 Two things `--force` does **not** override:
 
-- **Symlinks.** If `~/.claude/skills/fde` is a link into your own tree, fdeops refuses to write through it and tells you where it points. `--force` is permission to take over that location, not to follow it somewhere else.
+- **Symlinks.** If `~/.claude/skills/fde` is a link into your own tree, FDE Fieldbook refuses to write through it and tells you where it points. `--force` is permission to take over that location, not to follow it somewhere else.
 - **Permissions.** An unwritable skill directory is reported (`permission denied at …`), the rest of the install still lands, and the installer exits non-zero so a script can tell it was incomplete.
 
 ---

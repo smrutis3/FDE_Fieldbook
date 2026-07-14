@@ -9,7 +9,7 @@ We attacked our own tool (multi-client bind, secret paste, corrupt stakeholders,
 
 ## What we stole (and refused)
 - **Stole:** git-version the memory directory (Rowboat `version_history.ts` pattern), gardener *contract*, meeting-prep grounding, field-reports-as-repo-content.
-- **Refused:** Electron coworker shell, Gmail/Slack ambient sync, PostHog, background agents writing into the record. fdeops compounds as fast as the FDE debriefs — make debrief cheap, keep the NDA moat.
+- **Refused:** Electron coworker shell, Gmail/Slack ambient sync, PostHog, background agents writing into the record. FDE Fieldbook compounds as fast as the FDE debriefs — make debrief cheap, keep the NDA moat.
 
 ## Verification bar
 - `fde log` / `debrief` print `@<hash>`; `cd ~/fde-engagements/<client>/.fde && git log` shows the trail.

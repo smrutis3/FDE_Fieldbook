@@ -1,14 +1,14 @@
-# fdeops - Local LLM Setup
+# FDE Fieldbook - Local LLM Setup
 
-Use fdeops with **any local model** - Ollama, LM Studio, llama.cpp, vLLM, Open WebUI, or any inference server that accepts a system prompt.
+Use FDE Fieldbook with **any local model** - Ollama, LM Studio, llama.cpp, vLLM, Open WebUI, or any inference server that accepts a system prompt.
 
 ## Why it works
 
-fdeops is a SKILL.md file + markdown memory + a Node.js CLI. It calls no external API. The AI does the methodology; the CLI does the mechanics. Any model that can read a markdown system prompt can run fdeops.
+FDE Fieldbook is a SKILL.md file + markdown memory + a Node.js CLI. It calls no external API. The AI does the methodology; the CLI does the mechanics. Any model that can read a markdown system prompt can run FDE Fieldbook.
 
 ## Setup
 
-### 1. Install fdeops (same as any other setup)
+### 1. Install FDE Fieldbook (same as any other setup)
 
 ```bash
 npx fdeops init my-client

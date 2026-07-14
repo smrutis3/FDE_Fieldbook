@@ -2,13 +2,13 @@
 
 ## One line
 
-**You (human FDE)** bring judgment on site; **your AI coding agent** loads fdeops skills and `.fde/` memory on your laptop-under your control.
+**You (human FDE)** bring judgment on site; **your AI coding agent** loads FDE Fieldbook skills and `.fde/` memory on your laptop-under your control.
 
 **Agent = AI software only.** See [README § Who this is for](../README.md#who-this-is-for).
 
 ## Golden rules
 
-1. **fdeops runs on your machine** - not on servers or CI you do not operate.
+1. **FDE Fieldbook runs on your machine** - not on servers or CI you do not operate.
 2. **Default notes path:** `~/fde-engagements/<name>/.fde/`, created by `fde resume --init <name>`.
 3. **Bind each workspace once** with `fde resume --init <name>` - the registry then resolves the right engagement for every session and hook automatically. (`FDEOPS_ENGAGEMENT` remains as an advanced override: [install.md](./install.md#advanced-fdeops_engagement-override).)
 4. **Only `@fde`** - routing is automatic.

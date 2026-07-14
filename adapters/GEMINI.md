@@ -1,6 +1,6 @@
-# fdeops - GEMINI.md (Gemini CLI)
+# FDE Fieldbook - GEMINI.md (Gemini CLI)
 
-Context for Gemini CLI when assisting a **Forward Deployed Engineer (FDE)** - the human in this chat. fdeops runs on the FDE's own machine, never on systems they do not operate.
+Context for Gemini CLI when assisting a **Forward Deployed Engineer (FDE)** - the human in this chat. FDE Fieldbook runs on the FDE's own machine, never on systems they do not operate.
 
 ## Entry
 

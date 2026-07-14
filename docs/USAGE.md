@@ -13,7 +13,7 @@ Day-to-day reference below.
 ## New here? (5 minutes)
 
 1. Run `npx fdeops scan` in a repo - recon + the "ASK ON DAY 1" questions, zero config
-2. Read **Who this is for** and **Without fdeops vs with fdeops** in the README
+2. Read **Who this is for** in the README
 3. Bind a workspace: `fde resume --init <client-name>` (the one setup step)
 4. Skim [examples/garvey-payments/](../examples/garvey-payments/) Day 1 → Day 10
 5. In your **AI chat** (not email to a person): `@fde` + your actual situation
