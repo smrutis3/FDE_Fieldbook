@@ -60,6 +60,6 @@ Sleep 400ms
 
 Type "echo 'FDE Fieldbook - the second brain for Forward Deployed Engineers'"
 Enter
-Type "echo 'One skill. The memory writes itself. github.com/suboss87/fdeops'"
+Type "echo 'One skill. The memory writes itself. github.com/smrutis3/FDE_Fieldbook'"
 Enter
 Sleep 4s

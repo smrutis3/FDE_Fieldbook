@@ -11,7 +11,7 @@ FDE Fieldbook installs on **your laptop** - where **your AI coding agent** runs.
 ## Quickstart (the whole setup)
 
 ```text
-/plugin marketplace add suboss87/fdeops        # 1. install (Claude Code)
+/plugin marketplace add smrutis3/FDE_Fieldbook        # 1. install (Claude Code)
 /plugin install fdeops@fdeops
 ```
 
@@ -40,15 +40,15 @@ Type `@fde` in the AI chat and start working.
 ## Claude Code (recommended)
 
 ```text
-/plugin marketplace add suboss87/fdeops
+/plugin marketplace add smrutis3/FDE_Fieldbook
 /plugin install fdeops@fdeops
 ```
 
 Copy skills and hooks to disk:
 
 ```bash
-git clone https://github.com/suboss87/fdeops.git
-cd fdeops
+git clone https://github.com/smrutis3/FDE_Fieldbook.git
+cd FDE_Fieldbook
 node bin/install.js
 ```
 
@@ -156,7 +156,7 @@ When set, it takes precedence over the registry. A `~/.claude/FDEOPS-CLAUDE.md` 
 ## Update
 
 ```bash
-cd fdeops && git pull && node bin/install.js
+cd FDE_Fieldbook && git pull && node bin/install.js
 ```
 
 Or via npm: `npx fdeops@latest` (fetches the latest published FDE Fieldbook).
