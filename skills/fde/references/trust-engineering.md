@@ -36,7 +36,7 @@ Level 5: Trusted      → they call you before making decisions
 This is increasingly common. The right response is respect, not persuasion:
 
 - **Ask the policy, don't assume.** "Does your organisation have a position on AI-assisted code in production?"
-- **If prohibited:** work without AI on their code. Use fdeops for engagement memory (`.fde/` files) and your own planning - that's your tooling, not theirs.
+- **If prohibited:** work without AI on their code. Use FDE Fieldbook for engagement memory (`.fde/` files) and your own planning - that's your tooling, not theirs.
 - **If permitted with review:** every AI-touched line goes through their normal review process. Flag it: "AI-assisted, human-reviewed" in commit messages if they want traceability.
 - **If grey area:** treat as prohibited until someone with authority says otherwise. The cost of asking is zero; the cost of guessing wrong is the engagement.
 - **Never hide it.** An FDE caught using prohibited AI tools loses the engagement and the reputation. Full stop.

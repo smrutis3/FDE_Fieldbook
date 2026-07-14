@@ -1,5 +1,5 @@
 #!/bin/bash
-# fdeops PreCompact - preserve engagement state before context compaction.
+# FDE Fieldbook PreCompact - preserve engagement state before context compaction.
 # Resolves the engagement the same way as session-start/session-stop.
 
 resolve_engagement_dir() {

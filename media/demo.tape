@@ -1,5 +1,5 @@
 # scripts/demo.tape
-# fdeops v3 - discover does the work, memory writes itself
+# FDE Fieldbook v3 - discover does the work, memory writes itself
 # Generate with: vhs scripts/demo.tape
 
 Output media/demo.gif
@@ -58,7 +58,7 @@ Type "clear"
 Enter
 Sleep 400ms
 
-Type "echo 'fdeops - the second brain for Forward Deployed Engineers'"
+Type "echo 'FDE Fieldbook - the second brain for Forward Deployed Engineers'"
 Enter
 Type "echo 'One skill. The memory writes itself. github.com/suboss87/fdeops'"
 Enter

@@ -29,7 +29,7 @@ You are not an advisor reading tips aloud. Every skill produces a concrete artif
 
 ## The memory contract (non-negotiable)
 
-This is what makes fdeops a second brain instead of a chat window.
+This is what makes FDE Fieldbook a second brain instead of a chat window.
 
 1. **On entry:** resolve the engagement path and read `context.md` via `fde resume` (a bounded view - current state + recent activity). Nothing else until the routed phase needs it; pull other `.fde/` files only when the phase calls for them.
 2. **Deliverable = memory.** The output of every phase IS a `.fde/` file. You never ask the FDE to "update their notes" - producing the work and writing the memory are one action. The phase reference tells you which file.
@@ -69,12 +69,12 @@ When NOT to interrogate or challenge: unambiguous one-liners, mechanical ops, FD
 ## Data boundary (confirm before touching their code)
 
 - The `fde` CLI is **local only** - `git` + file reads, no AI, no network. Safe in any environment.
-- **You (the AI) only ever see customer code when the FDE points you at it** inside the agent they are already authorized to run. fdeops adds no new data path.
+- **You (the AI) only ever see customer code when the FDE points you at it** inside the agent they are already authorized to run. FDE Fieldbook adds no new data path.
 - **Before reading or generating against customer code, the AI policy must be known.** New engagement, policy unknown → ask it (land phase: "policy on AI-generated code? data that must never touch AI?") *before* loading their code into context. Default to "not permitted" until the FDE confirms.
 - Data tagged `<private>` (sacred data, PHI, cardholder, classified) is **redacted from CLI, dashboard, and hook-injected context**. Do **not** open raw `<private>` blocks with file tools (that bypasses redaction) or paste them into prompts/subagents - work around them, never with them.
 - Locked-down engagement (no AI on their code)? Use the CLI + the fieldbook only. The memory layer is the FDE's own notes, not customer code.
 
-**Engagement path - zero ceremony.** Run `fde resume` (fallback: `node ~/.claude/fdeops/fde.js resume`). The **workspace registry** (written once by `fde resume --init <name>`) is the normal path; resolution order is env var override → registry → pointer file → workspace-name match (read-only) → `./.fde`. Writes require a bind (or `FDEOPS_ENGAGEMENT`), not folder name alone. It prints a **bounded** view of `context.md` - the curated head (state, next action) plus the most recent activity, with the older session log collapsed (use `fde resume --full` when you genuinely need the whole history). If it reports NO ENGAGEMENT: confirm the client name in conversation (one question), then run `fde resume --init <name>` yourself - the one setup step; the FDE never runs setup commands. Never install fdeops on infrastructure the FDE does not control.
+**Engagement path - zero ceremony.** Run `fde resume` (fallback: `node ~/.claude/fdeops/fde.js resume`). The **workspace registry** (written once by `fde resume --init <name>`) is the normal path; resolution order is env var override → registry → pointer file → workspace-name match (read-only) → `./.fde`. Writes require a bind (or `FDEOPS_ENGAGEMENT`), not folder name alone. It prints a **bounded** view of `context.md` - the curated head (state, next action) plus the most recent activity, with the older session log collapsed (use `fde resume --full` when you genuinely need the whole history). If it reports NO ENGAGEMENT: confirm the client name in conversation (one question), then run `fde resume --init <name>` yourself - the one setup step; the FDE never runs setup commands. Never install FDE Fieldbook on infrastructure the FDE does not control.
 
 **You run the `fde` CLI for deterministic work - never improvise shell, never hand the command to the FDE:**
 
@@ -123,7 +123,7 @@ After you see TRIAGE + bounded `context.md`, open with a brief state playback - 
 - Full contradiction cleanup ("audit the sources before trusting the index") is an `@fde` conversation - doctor is the structural gate; you supply judgment.
 - If the concern is minor and won't change the next 3 moves - skip it.
 
-This is what makes fdeops a peer, not a notebook. The peer reviewed the file before you sat down.
+This is what makes FDE Fieldbook a peer, not a notebook. The peer reviewed the file before you sat down.
 
 ## Conversational voice
 

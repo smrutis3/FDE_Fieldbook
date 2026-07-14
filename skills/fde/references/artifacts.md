@@ -46,7 +46,7 @@ vs. investment: [from business-case.md]
 [Top 3 from risks.md with status]
 ```
 
-The FDE generates the content structured for slides. The client's design team (or AI slide tool) formats it. fdeops produces the substance, not the PowerPoint file.
+The FDE generates the content structured for slides. The client's design team (or AI slide tool) formats it. FDE Fieldbook produces the substance, not the PowerPoint file.
 
 ### 2. Governance framework
 
@@ -231,7 +231,7 @@ Date: [date] | Audience: [who needs this]
 2. **Dates and numbers from the record.** Never round, estimate, or approximate without flagging it: "[estimated]".
 3. **Classification.** Mark documents with their sensitivity: Internal, Confidential, Restricted. Default to Confidential for client-facing artifacts.
 4. **Version control.** Generated artifacts go to `.fde/artifacts/` with date-stamped filenames. Previous versions stay - don't overwrite.
-5. **Format guidance, not final format.** fdeops generates structured markdown content. The client's tools (Google Slides, PowerPoint, Confluence, Notion) apply formatting. Don't waste time on visual design - substance first.
+5. **Format guidance, not final format.** FDE Fieldbook generates structured markdown content. The client's tools (Google Slides, PowerPoint, Confluence, Notion) apply formatting. Don't waste time on visual design - substance first.
 
 ## Writes
 

@@ -9,7 +9,7 @@
 ## Honest contract
 
 - **Daily work does not need a source MCP.** Paste notes → debrief. File on disk → `fde ingest`.
-- **Connect means a source**, not FDEOps. Granola/Slack/Notion credentials stay with that MCP. FDEOps never pushes, never ambient-syncs, never stores their tokens.
+- **Connect means a source**, not FDE Fieldbook. Granola/Slack/Notion credentials stay with that MCP. FDE Fieldbook never pushes, never ambient-syncs, never stores their tokens.
 - **Sink is the CLI in this bound workspace** (`fde ingest`). `fdeops-ingest` MCP is optional. If you use it, pass `engagement` as the `.fde/` path from `fde resume --bind` (MCP servers often do not inherit the workspace bind).
 - Never invent that Granola/Slack is available if tools are missing. Never auto-apply to `.fde/`.
 

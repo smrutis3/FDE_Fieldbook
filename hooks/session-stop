@@ -1,5 +1,5 @@
 #!/bin/bash
-# fdeops SessionEnd - write-side memory backstop.
+# FDE Fieldbook SessionEnd - write-side memory backstop.
 #
 # The skill's memory contract says the agent appends a meaningful
 # "where we left off" to context.md before the session ends. This hook delegates
@@ -88,7 +88,7 @@ if [ -z "$ENG_DIR" ] && [ -f "CLAUDE.md" ]; then
   ENG_DIR=$(resolve_engagement_dir "$ENG")
 fi
 
-# 4) Global fdeops pointer file
+# 4) Global FDE Fieldbook pointer file
 if [ -z "$ENG_DIR" ] && [ -f "$HOME/.claude/FDEOPS-CLAUDE.md" ]; then
   ENG=$(grep -m1 '^FDEOPS_ENGAGEMENT=\|^FDEOS_ENGAGEMENT=' "$HOME/.claude/FDEOPS-CLAUDE.md" 2>/dev/null | cut -d= -f2-)
   ENG_DIR=$(resolve_engagement_dir "$ENG")

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Regenerates media/session.gif from a REAL fdeops session.
+# Regenerates media/session.gif from a REAL FDE Fieldbook session.
 #
 # Every line of output in the recording is the CLI's own - only the typing pace
 # and the pauses between commands are staged. If you change CLI output, re-record

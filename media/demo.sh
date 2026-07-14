@@ -1,5 +1,5 @@
 #!/bin/bash
-# fdeops - install on your machine, notes separate from workspace
+# FDE Fieldbook - install on your machine, notes separate from workspace
 
 P='\033[2;37m$ \033[0m'
 AI='\033[1;36m'
@@ -13,7 +13,7 @@ R='\033[0m'
 say() { printf "${AI}%s${R}\n" "$1"; sleep 0.028; }
 
 clear
-printf "${D}fdeops - your agent + private engagement notes${R}\n\n"
+printf "${D}FDE Fieldbook - your agent + private engagement notes${R}\n\n"
 sleep 0.9
 
 printf "${Y}▸ Install (once)${R}\n\n"

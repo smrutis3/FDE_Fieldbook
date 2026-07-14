@@ -10,10 +10,10 @@
 
 ## Honest contract (read once)
 
-- FDEOps owns the **sink only**: stage raw pulls → propose → confirm → apply. Nothing writes `.fde/` unreviewed.
-- **Source MCPs are the FDE's.** Granola, Slack, Notion, Gmail, custom — whatever they configured in Cursor/Claude. fdeops does not bundle OAuth, connectors, or ambient sync, and **does not push** to those tools.
+- FDE Fieldbook owns the **sink only**: stage raw pulls → propose → confirm → apply. Nothing writes `.fde/` unreviewed.
+- **Source MCPs are the FDE's.** Granola, Slack, Notion, Gmail, custom — whatever they configured in Cursor/Claude. FDE Fieldbook does not bundle OAuth, connectors, or ambient sync, and **does not push** to those tools.
 - Prefer **`fde ingest` in this bound workspace.** Optional `fdeops-ingest` MCP: pass `engagement` (path to `.fde/` from `fde resume --bind`) because MCP cwd often is not the client workspace.
-- The core `fde` CLI stays local (git + file reads). Source credentials live with that MCP; fdeops never stores them.
+- The core `fde` CLI stays local (git + file reads). Source credentials live with that MCP; FDE Fieldbook never stores them.
 - After apply, raw stays in `.inbox/`; the system of record (`.fde/`) stays thin dated facts.
 
 ## Capability check (before every pull)

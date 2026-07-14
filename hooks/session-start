@@ -1,5 +1,5 @@
 #!/bin/bash
-# fdeops SessionStart - inject TRIAGE + bounded engagement context (not the full skill).
+# FDE Fieldbook SessionStart - inject TRIAGE + bounded engagement context (not the full skill).
 # Token discipline (L1 progressive disclosure): Claude/Cursor already discover @fde via
 # skill metadata. Dumping skills/fde/SKILL.md here paid ~6-8k tokens every session even
 # when the FDE was not doing field work. Load the skill body only when @fde triggers.
@@ -59,7 +59,7 @@ if [ -z "$CONTEXT_FILE" ] && [ -f "CLAUDE.md" ]; then
   [ -n "$ENG_DIR" ] && CONTEXT_FILE="$ENG_DIR/context.md"
 fi
 
-# 4) Global fdeops pointer file
+# 4) Global FDE Fieldbook pointer file
 if [ -z "$CONTEXT_FILE" ] && [ -f "$HOME/.claude/FDEOPS-CLAUDE.md" ]; then
   ENG=$(grep -m1 '^FDEOPS_ENGAGEMENT=\|^FDEOS_ENGAGEMENT=' "$HOME/.claude/FDEOPS-CLAUDE.md" 2>/dev/null | cut -d= -f2-)
   ENG_DIR=$(resolve_engagement_dir "$ENG")
@@ -137,7 +137,7 @@ bounded_context() {
 CONTENT=""
 
 # Lean pointer only - never cat SKILL.md. Methods load on @fde / skill trigger.
-CONTENT="${CONTENT}fdeops: engagement fieldbook active. Human speaks plain language with @fde - you (the agent) run the local fde CLI for memory plumbing; never ask the human to type fde commands. Load skills/fde/SKILL.md when @fde triggers.\n\n"
+CONTENT="${CONTENT}FDE Fieldbook: engagement fieldbook active. Human speaks plain language with @fde - you (the agent) run the local fde CLI for memory plumbing; never ask the human to type fde commands. Load skills/fde/SKILL.md when @fde triggers.\n\n"
 
 # Same TRIAGE block as `fde resume` / `fde triage` (includes proactive hygiene
 # when the fieldbook has doctor issues; silent when clean). Monday morning must
