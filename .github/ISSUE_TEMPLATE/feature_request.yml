@@ -1,5 +1,5 @@
 name: Skill or engagement gap
-description: A situation fdeops does not handle well yet
+description: A situation FDE Fieldbook does not handle well yet
 labels: ["enhancement"]
 body:
   - type: textarea

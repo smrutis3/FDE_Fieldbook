@@ -5,7 +5,7 @@
 Create with:
 
 ```bash
-node bin/install.js init <engagement-name>   # from fdeops repo; or npx fdeops@latest init when npm ≥ 3.0.0
+node bin/install.js init <engagement-name>   # from FDE Fieldbook repo; or npx fdeops@latest init when npm ≥ 3.0.0
 ```
 
 Stays on **your machine** - not in shared git by default.

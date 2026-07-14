@@ -273,7 +273,7 @@ test('dashboard renders local HTML and redacts private blocks', () => {
   assert.equal(fs.existsSync(out), true)
 
   const html = fs.readFileSync(out, 'utf8')
-  assert.match(html, /FDEOPS/)
+  assert.match(html, /FDE Fieldbook/)
   assert.match(html, /Visible policy/)
   assert.match(html, /private - redacted/)
   assert.doesNotMatch(html, /4111-1111-1111-1111/)
@@ -519,7 +519,7 @@ test('install never deletes or overwrites a skill dir the user wrote (issue #8)'
   assert.equal(fs.readFileSync(path.join(mine, 'SKILL.md'), 'utf8'), '---\nname: healthcare-fde\n---\nmy own hard-won prompt\n')
   assert.equal(fs.existsSync(path.join(mine, 'notes.md')), true, 'user-authored skill must survive install')
   assert.equal(fs.readFileSync(path.join(ownFde, 'SKILL.md'), 'utf8'), '---\nname: fde\n---\nunrelated skill of mine\n')
-  assert.match(first.stdout, /fdeops did not create/)
+  assert.match(first.stdout, /FDE Fieldbook did not create/)
   assert.match(first.stdout, /healthcare-fde/)
 
   // --force is the documented escape hatch
@@ -564,7 +564,7 @@ test('install adopts an earlier unmarked fdeops skill so upgrades still apply', 
   const m = runInstall(mentions, [])
   assert.equal(m.status, 0, m.stderr)
   assert.equal(fs.readFileSync(path.join(theirs, 'SKILL.md'), 'utf8'), prose, 'prose mentioning fdeops must not authorize an overwrite')
-  assert.match(m.stdout, /fdeops did not create/)
+  assert.match(m.stdout, /FDE Fieldbook did not create/)
 })
 
 test('install refuses to write through a symlinked skill dir, even with --force', () => {
@@ -592,7 +592,7 @@ test('install refuses to write through a symlinked skill dir, even with --force'
     assert.equal(fs.existsSync(path.join(real, 'references')), false)
     assert.equal(fs.existsSync(path.join(realLegacy, 'SKILL.md')), true, 'a symlinked legacy dir must survive')
     assert.equal(fs.lstatSync(path.join(skills, 'fde')).isSymbolicLink(), true, 'the link itself stays the user\'s')
-    assert.match(r.stdout, /symlinks - fdeops will not write through them/)
+    assert.match(r.stdout, /symlinks - FDE Fieldbook will not write through them/)
   }
 })
 

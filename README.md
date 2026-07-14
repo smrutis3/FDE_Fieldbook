@@ -1,13 +1,13 @@
-# FDEOps
+# FDE Fieldbook
 
-**Your AI coding agent forgets your client every morning. fdeops remembers.**
+**Your AI coding agent forgets your client every morning. FDE Fieldbook remembers.**
 
 [![npm version](https://img.shields.io/npm/v/fdeops.svg)](https://www.npmjs.com/package/fdeops)
 [![CI](https://github.com/suboss87/fdeops/actions/workflows/validate.yml/badge.svg)](https://github.com/suboss87/fdeops/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
 
-**Memory + methodology + skills, in one kit.** Skill packs - BMAD, Spec-Kit, [mattpocock/skills](https://github.com/mattpocock/skills) - teach your AI coding agent how to *build*. None of them remember who the client is, what you promised them, or who agreed it was delivered. FDEOps adds the missing layer: a private fieldbook per engagement (`.fde/`), a field methodology (land → close), and one `@fde` skill that routes it all.
+**Memory + methodology + skills, in one kit.** Skill packs - BMAD, Spec-Kit, [mattpocock/skills](https://github.com/mattpocock/skills) - teach your AI coding agent how to *build*. None of them remember who the client is, what you promised them, or who agreed it was delivered. FDE Fieldbook adds the missing layer: a private fieldbook per engagement (`.fde/`), a field methodology (land → close), and one `@fde` skill that routes it all.
 
 Built for Forward Deployed Engineers, and anyone embedded in client work: consultants, agency developers, solutions architects, fractional CTOs. Feels like a second brain; behaves like a defensible record (dated, sourced, yours).
 
@@ -89,7 +89,7 @@ Working: `npx fdeops resume` prints this client's phase, trust, and next action.
 - **You** describe the situation with `@fde` (or plain language once the skill is loaded).
 - **Hooks (Claude Code)** load where you left off and snapshot on the way out. Other hosts: same CLI and files; you call `@fde` / `resume`.
 - **Local CLI** — writes, receipts, status. Zero model tokens. The AI coding agent runs it; you do not live in the CLI. [docs/USAGE.md](docs/USAGE.md)
-- **Pull (optional)** — FDEOps is the sink. Paste is the daily path. A source MCP you add (Granola, Slack, Notion, …) can fetch text; `@fde connect …` walks config. No push, no sync, no tokens in `.fde/`. [mcp/recipes/](mcp/recipes/)
+- **Pull (optional)** — FDE Fieldbook is the sink. Paste is the daily path. A source MCP you add (Granola, Slack, Notion, …) can fetch text; `@fde connect …` walks config. No push, no sync, no tokens in `.fde/`. [mcp/recipes/](mcp/recipes/)
 
 `CLAUDE.md` is how the *code* works. The fieldbook is how the *engagement* works. The record lives at `~/fde-engagements/<client>/.fde/` — not inside any vendor. Change hosts, install `@fde` on the new one, bind if needed, keep talking.
 
@@ -154,7 +154,7 @@ Schema: [docs/schema.md](docs/schema.md).
 
 Local HTML: trust, phase, next, the record. `@fde` dashboard, or `npx fdeops dashboard` (`--all` for the portfolio).
 
-<p align="center"><img width="1336" height="624" alt="fdeops Fieldbook in the browser" src="https://github.com/user-attachments/assets/5683614c-7730-4a3a-860d-185053a377eb" /></p>
+<p align="center"><img width="1336" height="624" alt="FDE Fieldbook in the browser" src="https://github.com/user-attachments/assets/5683614c-7730-4a3a-860d-185053a377eb" /></p>
 
 ---
 

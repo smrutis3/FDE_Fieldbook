@@ -56,7 +56,7 @@ Ingest connect UX — wire any source MCP in plain language; recipes + capabilit
 - **Capability check** before pull — list available sink/source tools; never pretend a source exists.
 
 ### Changed
-- README / USAGE clarify: FDEOps is the sink; sources are user MCPs; connect once then pull in natural language.
+- README / USAGE clarify: FDE Fieldbook is the sink; sources are user MCPs; connect once then pull in natural language.
 
 ## 3.9.19 — 2026-07-29
 
@@ -64,7 +64,7 @@ Ingest sink — pull large artifacts from user-configured source MCPs; same conf
 
 ### Added
 - **`fde ingest` CLI** — `stage`, `list`, `propose`, `apply` verbs. Raw pulls land in `<engagement>/.inbox/`; apply routes dated facts into `.fde/` (wraps debrief `--smart` / `--apply`). Optional `via:<source>` provenance.
-- **`mcp/fdeops-ingest`** — thin stdio MCP mirroring ingest verbs. Source MCPs (Granola, Gmail, Notion, custom) stay user-configured outside fdeops.
+- **`mcp/fdeops-ingest`** — thin stdio MCP mirroring ingest verbs. Source MCPs (Granola, Gmail, Notion, custom) stay user-configured outside FDE Fieldbook.
 - **Skill + docs** — `@fde` routing for "make sure we're up to date" / pull-from-source; `references/ingest.md` method card; cross-links in debrief, USAGE, schema, PRIVACY, README.
 
 ### Changed
