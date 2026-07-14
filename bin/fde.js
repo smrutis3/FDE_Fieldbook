@@ -1054,7 +1054,7 @@ function cmdResume(args) {
     const name = args[initIdx + 1]
     if (!name) { console.error('usage: fde resume --init <engagement-name>'); process.exit(1) }
     const tpl = templatesDir()
-    if (!tpl) { console.error('templates not found - run from the fdeops clone or reinstall'); process.exit(1) }
+    if (!tpl) { console.error('templates not found - run from the FDE Fieldbook clone or reinstall'); process.exit(1) }
     const slug = slugify(name)
     const engRoot = path.join(ENGAGEMENTS_ROOT, slug)
     const fdeDir = path.join(engRoot, '.fde')

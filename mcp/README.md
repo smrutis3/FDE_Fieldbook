@@ -42,7 +42,7 @@ See [`recipes/`](./recipes/) for file, Granola-shaped, and Notion-shaped setup. 
 
 ## Adding a source MCP
 
-Source MCPs are **not** bundled in fdeops. To add Granola, Gmail, or another provider:
+Source MCPs are **not** bundled in FDE Fieldbook. To add Granola, Gmail, or another provider:
 
 1. Install or configure that provider's MCP in your Cursor/Claude `mcp.json`.
 2. Configure `fdeops-ingest` separately (see [`fdeops-ingest/README.md`](./fdeops-ingest/README.md)).

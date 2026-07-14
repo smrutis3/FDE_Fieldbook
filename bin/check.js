@@ -282,14 +282,14 @@ for (const phrase of badPhrases) {
     fail(`README must not contain hype phrase: ${phrase}`)
   }
 }
-// fdeops stands on its own. The README must never frame it as a derivative -
+// FDE Fieldbook stands on its own. The README must never frame it as a derivative -
 // a fork, port, or rebuild of another project.
 const derivativeFraming = [
   /\b(fork of|forked from|port of|rebuild of|reimplementation of|based on)\s+[A-Z]/,
   /\b(inspired by|built on top of|powered by)\s+[A-Z][A-Za-z0-9-]+/,
 ]
 for (const rx of derivativeFraming) {
-  if (rx.test(readme)) fail(`README must not frame fdeops as derivative: ${rx}`)
+  if (rx.test(readme)) fail(`README must not frame FDE Fieldbook as derivative: ${rx}`)
 }
 if (/docs\/internal|PMF_360/i.test(readme)) {
   fail('README must not link docs/internal or PMF_360')
@@ -538,7 +538,7 @@ if (apMcp.$schema !== AP_MCP_SCHEMA) {
   fail('mcp.json permits only $schema and mcpServers')
 } else {
   for (const [name, srv] of Object.entries(apServers)) {
-    if (srv.type !== 'stdio') fail(`mcp.json ${name}: fdeops ships stdio servers only (local-only core)`)
+    if (srv.type !== 'stdio') fail(`mcp.json ${name}: FDE Fieldbook ships stdio servers only (local-only core)`)
     else if (!srv.command || (/[\s/]/.test(srv.command) && !srv.command.startsWith('./'))) {
       fail(`mcp.json ${name}: command must be one executable token or a ./-relative path`)
     } else if ((srv.args || []).some(a => path.isAbsolute(a))) {

@@ -66,7 +66,7 @@ function markManaged(dir) {
     fs.writeFileSync(
       path.join(dir, MANAGED_MARKER),
       `managed-by: fdeops\nversion: ${version}\ninstalled: ${new Date().toISOString()}\n` +
-      'Delete this file to make fdeops treat the directory as yours and leave it alone.\n',
+      'Delete this file to make FDE Fieldbook treat the directory as yours and leave it alone.\n',
     )
   } catch (_) {}
 }
@@ -76,16 +76,16 @@ function isManaged(dir) {
 }
 
 // A skill "directory" that is really a symlink points somewhere outside
-// ~/.claude/skills that fdeops has no claim on. Writing through it would edit
+// ~/.claude/skills that FDE Fieldbook has no claim on. Writing through it would edit
 // files in the user's own tree - refuse even under --force, which is permission
 // to take over this location, not to follow it elsewhere.
 function isLink(p) {
   try { return fs.lstatSync(p).isSymbolicLink() } catch (_) { return false }
 }
 
-// Fingerprint of a skill fdeops itself wrote before markers existed. Anchored on
+// Fingerprint of a skill FDE Fieldbook itself wrote before markers existed. Anchored on
 // the shipped frontmatter, not a bare "fdeops" substring: a skill of the user's
-// that merely mentions fdeops in prose is theirs, not ours. Only consulted for a
+// that merely mentions FDE Fieldbook in prose is theirs, not ours. Only consulted for a
 // directory whose name matches one we ship, and only to overwrite - never to delete.
 function wasInstalledByUs(dir) {
   try {
@@ -123,7 +123,7 @@ function removeLegacySkills(opts = {}) {
   return { removed, skipped, links }
 }
 
-// Copy each skill in, but never over a directory fdeops did not create.
+// Copy each skill in, but never over a directory FDE Fieldbook did not create.
 function installSkillDirs(opts = {}) {
   const skipped = []
   const links = []
@@ -136,12 +136,12 @@ function installSkillDirs(opts = {}) {
     if (isLink(dest)) { links.push(entry.name); continue }
     if (fs.existsSync(dest) && !isManaged(dest) && !opts.force) {
       // Installs predating the marker are still ours: adopt a same-named dir
-      // whose SKILL.md is recognizably fdeops', so upgrades keep working.
+      // whose SKILL.md is recognizably FDE Fieldbook's, so upgrades keep working.
       if (!wasInstalledByUs(dest)) {
         skipped.push(entry.name)
         continue
       }
-      console.log(`  adopt  ~/.claude/skills/${entry.name} (earlier fdeops install)`)
+      console.log(`  adopt  ~/.claude/skills/${entry.name} (earlier FDE Fieldbook install)`)
     }
     // One unwritable skill dir must not abort the install with a stack trace:
     // say it in human terms, place the rest, and exit non-zero at the end.
@@ -167,16 +167,16 @@ function destPathFor(failedPath, src, dest) {
 
 function reportCollisions(paths, verb) {
   if (!paths.length) return
-  console.log(`  skip   ${paths.length} skill dir(s) fdeops did not create - ${verb} would destroy your own work:`)
+  console.log(`  skip   ${paths.length} skill dir(s) FDE Fieldbook did not create - ${verb} would destroy your own work:`)
   for (const name of paths) console.log(`           ~/.claude/skills/${name}`)
-  console.log('         move or delete them yourself, or re-run with --force to let fdeops take them over')
+  console.log('         move or delete them yourself, or re-run with --force to let FDE Fieldbook take them over')
 }
 
 function reportLinks(names) {
   if (!names.length) return
-  console.log(`  skip   ${names.length} skill path(s) that are symlinks - fdeops will not write through them:`)
+  console.log(`  skip   ${names.length} skill path(s) that are symlinks - FDE Fieldbook will not write through them:`)
   for (const name of names) console.log(`           ~/.claude/skills/${name} -> ${readLinkQuiet(path.join(GLOBAL_SKILLS_DIR, name))}`)
-  console.log('         remove the link if you want fdeops to install at that path itself')
+  console.log('         remove the link if you want FDE Fieldbook to install at that path itself')
 }
 
 function readLinkQuiet(p) {
@@ -267,7 +267,7 @@ function placePointer(destPath, content, label, appendable) {
 function cmdAdapters(targetDir, opts = {}) {
   const dest = path.resolve(targetDir || process.cwd())
   console.log('')
-  console.log(`  fdeops cross-platform adapters → ${dest}`)
+  console.log(`  FDE Fieldbook cross-platform adapters → ${dest}`)
   console.log('  One brain (skills/fde/SKILL.md). These are thin pointers per tool.')
   console.log('')
   // The pointers below all point at ~/.claude/skills/fde/SKILL.md. Only the
@@ -311,7 +311,7 @@ function cmdInit(engagementName) {
   }
 
   console.log('')
-  console.log('  fdeops engagement created (private notes on your machine)')
+  console.log('  FDE Fieldbook engagement created (private notes on your machine)')
   console.log('')
   console.log(`  ${fdeDir}`)
   if (created) console.log('  (new)')
