@@ -16,6 +16,5 @@
 | `evals/` | Cheap skill-routing contract checks |
 | `.claude-plugin/` | Claude Code marketplace metadata |
 | `docs/` | install, USAGE, schema, OPERATIONS, REPO_LAYOUT, skills, skills-reference |
-| `media/` | Optional demo assets (not required for CLI/skill install) |
 
 **Install:** [install.md](./install.md) - Claude plugin + git clone is the reliable path.

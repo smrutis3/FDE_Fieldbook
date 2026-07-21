@@ -42,13 +42,6 @@ for (const f of requiredTemplates) {
   else ok(`template ${f}`)
 }
 
-const gif = path.join(root, 'media', 'demo.gif')
-if (!fs.existsSync(gif) || fs.statSync(gif).size < 1000) {
-  fail('media/demo.gif missing or too small')
-} else {
-  ok('media/demo.gif')
-}
-
 for (const dir of fs.readdirSync(path.join(root, 'skills'))) {
   const skill = path.join(root, 'skills', dir, 'SKILL.md')
   if (!fs.existsSync(skill)) continue
@@ -216,24 +209,13 @@ if (read('package.json').includes('postinstall')) {
 }
 
 const readme = read('README.md')
-// The README shows one recording: media/session.gif, a real CLI session.
-// media/demo.gif is a hand-typed mock kept for history - it must never be embedded,
-// or the front door shows output no command actually produced.
-if (readme.includes('demo.gif')) fail('README must not embed media/demo.gif (staged mock, not real CLI output)')
-else ok('README no staged demo gif')
+if (readme.includes('demo.gif') || readme.includes('session.gif')) {
+  fail('README must not embed leftover media/demo.gif or media/session.gif')
+} else ok('README no leftover demo media')
 
-if (!readme.includes('media/session.gif')) {
-  fail('README must embed media/session.gif (the recorded session is the front door)')
-} else if (!readme.includes('media/record-session.sh')) {
-  fail('README must link media/record-session.sh next to the recording, so it can be re-recorded')
-} else {
-  const gifPath = path.join(root, 'media', 'session.gif')
-  const rec = path.join(root, 'media', 'record-session.sh')
-  if (!fs.existsSync(gifPath) || fs.statSync(gifPath).size < 50000) fail('media/session.gif missing or too small')
-  else if (!fs.existsSync(rec)) fail('media/record-session.sh missing - the recording must be reproducible')
-  else if (!fs.existsSync(path.join(root, 'media', 'session.cast'))) fail('media/session.cast missing - keep the source recording next to the gif')
-  else ok('README recorded session (gif + reproducible recorder + cast)')
-}
+if (!/time\.md/i.test(readme) || !/\bpulse\b/i.test(readme)) {
+  fail('README must document time.md and pulse')
+} else ok('README time + pulse')
 
 // Every repo-relative README link and image must resolve, or the front door 404s.
 const brokenLinks = []
