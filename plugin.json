@@ -4,11 +4,11 @@
   "version": "3.10.2",
   "description": "FDE Fieldbook — engagement memory for Forward Deployed Engineers: per-client memory in local .fde/ files, one @fde skill, land to close methodology. Local-only, no network.",
   "author": {
-    "name": "Subash Natarajan",
-    "url": "https://github.com/suboss87"
+    "name": "Smruti Singh",
+    "url": "https://github.com/smrutis3"
   },
-  "homepage": "https://fdeops.io/",
-  "repository": "https://github.com/suboss87/FDEOps",
+  "homepage": "https://github.com/smrutis3/FDE_Fieldbook",
+  "repository": "https://github.com/smrutis3/FDE_Fieldbook",
   "license": "MIT",
   "keywords": [
     "fde",

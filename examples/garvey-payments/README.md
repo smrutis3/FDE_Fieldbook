@@ -7,7 +7,7 @@ Follow [README § The basic workflow](../../README.md#the-basic-workflow) while 
 ## Setup (your machine)
 
 ```bash
-cd fdeops && node bin/install.js
+cd FDE_Fieldbook && node bin/install.js
 cd <your-client-workspace>
 fde resume --init garvey-payments   # creates the engagement and binds this workspace
 ```

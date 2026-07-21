@@ -3,7 +3,7 @@
 **Your AI coding agent forgets your client every morning. FDE Fieldbook remembers.**
 
 [![npm version](https://img.shields.io/npm/v/fdeops.svg)](https://www.npmjs.com/package/fdeops)
-[![CI](https://github.com/suboss87/fdeops/actions/workflows/validate.yml/badge.svg)](https://github.com/suboss87/fdeops/actions)
+[![CI](https://github.com/smrutis3/FDE_Fieldbook/actions/workflows/validate.yml/badge.svg)](https://github.com/smrutis3/FDE_Fieldbook/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
 
@@ -45,12 +45,12 @@ Same folder every time: `~/fde-engagements/<client>/.fde/`.
 **1. Install.** Claude Code: session hooks (context before you type). Everywhere else: the same fieldbook, loaded when you ask.
 
 ```text
-/plugin marketplace add suboss87/fdeops
+/plugin marketplace add smrutis3/FDE_Fieldbook
 /plugin install fdeops@fdeops
 ```
 
 ```bash
-npx skills add suboss87/fdeops          # Cursor, Codex, skills-compatible hosts
+npx skills add smrutis3/FDE_Fieldbook          # Cursor, Codex, skills-compatible hosts
 ```
 
 **2. Bind once** in the client workspace:
@@ -75,7 +75,7 @@ Working: `npx fdeops resume` prints this client's phase, trust, and next action.
 
 - **Adapters:** `npx fdeops adapters .` — [adapters/](adapters/README.md)
 - **Local LLMs:** load `skills/fde/SKILL.md` — [guide](adapters/LOCAL-LLM.md)
-- **Air-gapped:** `git clone https://github.com/suboss87/fdeops.git && cd fdeops && node bin/install.js`
+- **Air-gapped:** `git clone https://github.com/smrutis3/FDE_Fieldbook.git && cd FDE_Fieldbook && node bin/install.js`
 - **No install:** `npx fdeops demo` · `npx fdeops scan` (heuristic recon, not findings)
 - **Requires:** Node.js >= 18
 - **Override:** `FDEOPS_ENGAGEMENT` — [docs/install.md](docs/install.md)

@@ -50,9 +50,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/suboss87/fdeops.git"
+    "url": "git+https://github.com/smrutis3/FDE_Fieldbook.git"
   },
-  "author": "Subash Natarajan <suboss87@gmail.com> (https://github.com/suboss87)",
+  "author": "Smruti Singh <smrutis3@illinois.edu> (https://github.com/smrutis3)",
   "license": "MIT",
   "engines": {
     "node": ">=18"

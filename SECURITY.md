@@ -20,9 +20,9 @@ Skills guide **AI coding agent** behavior. What you send to an AI vendor is gove
 
 ## Reporting a vulnerability
 
-**Email `suboss87@gmail.com` with `[fdeops security]` in the subject.** This channel works today and is the one to use if anything else fails.
+**Email `smrutis3@illinois.edu` with `[fdeops security]` in the subject.** This channel works today and is the one to use if anything else fails.
 
-If the repository's private reporting is enabled, [GitHub Security Advisories](https://github.com/suboss87/fdeops/security/advisories/new) is equally fine — it keeps the thread and the fix in one place. That page 403s when private reporting is off, so it is a second option, never the only one.
+If the repository's private reporting is enabled, [GitHub Security Advisories](https://github.com/smrutis3/FDE_Fieldbook/security/advisories/new) is equally fine — it keeps the thread and the fix in one place. That page 403s when private reporting is off, so it is a second option, never the only one.
 
 Please include: affected version (the `version` in `package.json`, or the commit), the exact commands, what you expected versus what happened, and the impact. Reduced test cases help more than write-ups.
 
