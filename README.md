@@ -2,7 +2,6 @@
 
 **Your AI coding agent forgets your client every morning. FDE Fieldbook remembers.**
 
-[![npm version](https://img.shields.io/npm/v/fdeops.svg)](https://www.npmjs.com/package/fdeops)
 [![CI](https://github.com/smrutis3/FDE_Fieldbook/actions/workflows/validate.yml/badge.svg)](https://github.com/smrutis3/FDE_Fieldbook/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
@@ -31,6 +30,8 @@ Talk in plain language with `@fde`. The AI coding agent runs the plumbing. You c
 |------|--------------|--------------|
 | **Start of week** | `@fde` — or just open Claude Code | Fieldbook on disk either way. **Claude Code** injects trust, phase, next before you type. **Cursor / Codex / others:** say `@fde` or `resume` — nothing auto-loads. |
 | **After a meeting** | `@fde` debrief these notes *(paste or attach)* | Proposed updates. You review, then confirm. |
+| **Log time** | `@fde` I spent 2.5h on the write-back slice · week budget is 4h | Dated hours and this week's plan land in `time.md`. |
+| **Portfolio check** | `@fde` who is quiet? who did I starve? | **Trust** (politics) then **pulse** (last customer touch + your hours). |
 | **Optional: pull** | `@fde` connect Granola *(once)* · `@fde` pull today's Acme transcript | You add that source MCP. We **pull** on request — no push, no sync. [mcp/recipes/](mcp/recipes/) |
 | **Before a stakeholder meeting** | `@fde` prep me for tomorrow with the sponsor | Brief from what you already logged. |
 | **Scope dispute** | `@fde` when did we agree to drop that? | Dated answers, or a clear gap. |
@@ -88,7 +89,8 @@ Working: `npx fdeops resume` prints this client's phase, trust, and next action.
 
 - **You** describe the situation with `@fde` (or plain language once the skill is loaded).
 - **Hooks (Claude Code)** load where you left off and snapshot on the way out. Other hosts: same CLI and files; you call `@fde` / `resume`.
-- **Local CLI** — writes, receipts, status. Zero model tokens. The AI coding agent runs it; you do not live in the CLI. [docs/USAGE.md](docs/USAGE.md)
+- **Local CLI** — writes, receipts, status, hours. Zero model tokens. The AI coding agent runs it; you do not live in the CLI. [docs/USAGE.md](docs/USAGE.md)
+- **Time + pulse** — planned hours vs spent (`time.md`), plus whether you are still in touch. Green ≤3 days since last customer contact; amber 4–7 days or in-touch with 0h this week; red >7 days or 0h and you have not shown up in 3 days. Pulse is not product adoption and does not override trust. [docs/USAGE.md](docs/USAGE.md#time--pulse)
 - **Pull (optional)** — FDE Fieldbook is the sink. Paste is the daily path. A source MCP you add (Granola, Slack, Notion, …) can fetch text; `@fde connect …` walks config. No push, no sync, no tokens in `.fde/`. [mcp/recipes/](mcp/recipes/)
 
 `CLAUDE.md` is how the *code* works. The fieldbook is how the *engagement* works. The record lives at `~/fde-engagements/<client>/.fde/` — not inside any vendor. Change hosts, install `@fde` on the new one, bind if needed, keep talking.
@@ -142,7 +144,8 @@ One folder per client. Plain markdown. Grep it, copy it, defend it.
 | `context.md` | Where you are |
 | `brief.md` / `success.md` | What they asked; what “done” is and who signs |
 | `reality.md` / `terrain.md` | The real problem; the map |
-| `stakeholders.md` | `[signal:green\|amber\|red]` |
+| `stakeholders.md` | `[signal:green\|amber\|red]` — this drives **trust** |
+| `time.md` | Week budget + dated hours — this drives **pulse** (with last customer touch) |
 | `trust-profile.md` | Sacred data, AI policy, approval chain |
 | `decisions.md` / `risks.md` / `delivery.md` | Dated choices; live risks; what shipped and how it rolls back |
 
@@ -152,7 +155,7 @@ Schema: [docs/schema.md](docs/schema.md).
 
 ## Fieldbook UI
 
-Local HTML: trust, phase, next, the record. `@fde` dashboard, or `npx fdeops dashboard` (`--all` for the portfolio).
+Local HTML: trust, pulse, hours this week, phase, next, the record. `@fde` dashboard, or `npx fdeops dashboard` (`--all` for the portfolio). Sorted trust first, then pulse, then starved clients (budget set, 0h logged).
 
 <p align="center"><img width="1336" height="624" alt="FDE Fieldbook in the browser" src="https://github.com/user-attachments/assets/5683614c-7730-4a3a-860d-185053a377eb" /></p>
 
