@@ -1,19 +1,8 @@
 # Contributing
 
-**fdeops is authored and maintained by [Subash Natarajan](https://github.com/suboss87).**
+
 
 This repository reflects one operator’s field kit - open-sourced for other FDEs to use, not a multi-maintainer framework with delegated merge rights.
-
----
-
-## How to help
-
-| Channel | Use for |
-|---------|---------|
-| [GitHub Issues](https://github.com/suboss87/fdeops/issues) | Bugs, gaps (“situation X isn’t covered”), anonymized patterns that worked |
-| [Discussions](https://github.com/suboss87/fdeops/discussions) | Questions about fit on an engagement type, workflow ideas, show-and-tell |
-
-**Do not** open PRs with client-identifying data, `.fde/` exports, or screenshots containing real names.
 
 ---
 

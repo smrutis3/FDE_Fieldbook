@@ -197,13 +197,3 @@ Local HTML: trust, phase, next, the record. `@fde` dashboard, or `npx fdeops das
 Re-run the Quickstart install, or from a clone: `git pull && node bin/install.js`
 
 ---
-
-## Contributing
-
-**[Subash Natarajan](https://www.linkedin.com/in/subashn/)**. [Issues](https://github.com/suboss87/fdeops/issues) · [CONTRIBUTING.md](CONTRIBUTING.md)
-
-Thanks to builders whose craft sharpened the thinking, among them [Andrej Karpathy](https://karpathy.ai/)'s engineering guidelines and the [agentic engineering workflow](https://github.com/pawel-cell/micky-podcast-agentic-engineering) notes from David Ondrej / Michael Shimeles. FDEOps is handcrafted for field work; resemblance is craft, not a fork.
-
-**What we won't build:** SaaS sync; Slack/Notion/Granola connectors or **push** inside the CLI; CRM as core; hardware capture; generic code-craft packs (TDD/review live elsewhere). You may **pull** via *your* MCP. The `fde` CLI stays local-only.
-
-[FDE Methodology](FDE-METHODOLOGY.md) · [SECURITY.md](SECURITY.md) · [PRIVACY.md](PRIVACY.md) · [Repo layout](docs/REPO_LAYOUT.md) · [Skills matrix](docs/skills.md) · MIT
